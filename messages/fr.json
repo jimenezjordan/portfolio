@@ -1,0 +1,21 @@
+{
+  "Navbar": {
+    "home": "Accueil",
+    "projects": "Projets",
+    "about": "Parcours",
+    "contact": "Contact"
+  },
+  "Footer": {
+    "rights": "Tous droits réservés",
+    "builtWith": "Construit avec Next.js"
+  },
+  "Home": {
+    "hero": {
+      "available": "Disponible pour de nouvelles opportunités",
+      "title": "Développeur web full-stack",
+      "subtitle": "Je construis des applications métier qui rendent les équipes autonomes.",
+      "cta": "Voir mes projets",
+      "ctaSecondary": "Me contacter"
+    }
+  }
+}
