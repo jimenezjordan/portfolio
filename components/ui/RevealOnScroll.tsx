@@ -15,7 +15,7 @@ export default function RevealOnScroll({
   className
 }: Props) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const isInView = useInView(ref, { once: true, margin: '0px' });
 
   return (
     <motion.div

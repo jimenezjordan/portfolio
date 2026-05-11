@@ -41,5 +41,123 @@
       "devops": "DevOps & infra",
       "languages": "Langages additionnels"
     }
+  },
+  "ProjectDegresJours": {
+    "breadcrumb": {
+      "home": "Accueil",
+      "projects": "Projets",
+      "current": "Degrés Jours"
+    },
+    "hero": {
+      "title": "Degrés Jours — Collecte météo automatisée",
+      "pitch": "Chaîne de collecte quotidienne des données météo pour 22 sites ESLC. Un script C# déclenche tout à 13h30 ; à 13h45, les fichiers sont consommés par ICopitole — fenêtre d'intervention de 10 minutes.",
+      "stat1Value": "22",
+      "stat1Label": "Sites couverts",
+      "stat2Value": "10 min",
+      "stat2Label": "Fenêtre critique",
+      "stat3Value": "Daily",
+      "stat3Label": "Fréquence",
+      "stat4Value": "Solo",
+      "stat4Label": "Rôle"
+    },
+    "context": {
+      "kicker": "Le contexte",
+      "title": "Un problème métier quotidien",
+      "p1": "Groupe ESLC exploite 22 sites répartis en France. Chaque jour, les degrés jours — un indicateur thermique clé pour le chauffage et la climatisation — doivent être collectés depuis MétéoFrance et injectés dans ICopitole, le logiciel de gestion énergétique du groupe.",
+      "p2": "Avant ce projet, la collecte était manuelle. J'ai conçu une chaîne entièrement automatisée : un script C# (SCR-01) tourne chaque jour à 13h30, collecte les données des 22 stations, les écrit en parallèle dans des fichiers .data (pour ICopitole) et dans MongoDB (pour le portail web temps réel)."
+    },
+    "architecture": {
+      "kicker": "Architecture",
+      "title": "Double écriture parallèle",
+      "branch1Label": "Vers ICopitole",
+      "branch2Label": "Vers le portail web"
+    },
+    "timeline": {
+      "kicker": "Démo interactive",
+      "title": "La fenêtre critique de 10 minutes",
+      "scenarioNominal": "Scénario nominal",
+      "scenarioError": "Erreur + relance",
+      "noReturn": "Point de non-retour",
+      "clickHint": "Cliquez sur une étape pour voir les détails",
+      "nodes": {
+        "n1330": {
+          "time": "13h30",
+          "status": "AUTO",
+          "nominal": {
+            "action": "Déclenchement du script SCR-01",
+            "detail": "La tâche planifiée Windows lance SCR-01. Le script interroge l'API MétéoFrance pour chacun des 22 sites et collecte les données TN/TX de la veille."
+          },
+          "error": {
+            "action": "Déclenchement du script SCR-01",
+            "detail": "La tâche planifiée Windows lance SCR-01. Le script interroge l'API MétéoFrance — une ou plusieurs stations renvoient une erreur (timeout, données manquantes, quota API)."
+          }
+        },
+        "n1335": {
+          "time": "13h35",
+          "status": "AUTO",
+          "nominal": {
+            "action": "Mail de compte rendu envoyé ✅",
+            "detail": "SCR-01 termine son exécution. Un mail récapitulatif est envoyé automatiquement : 22/22 stations collectées, fichiers .data écrits sur SRV21 et SRV22, MongoDB à jour."
+          },
+          "error": {
+            "action": "Mail d'erreur envoyé ❌",
+            "detail": "SCR-01 détecte une anomalie et envoie un mail d'alerte : stations en erreur listées, fichiers .data partiels ou absents. La fenêtre d'intervention de 10 minutes commence maintenant."
+          }
+        },
+        "n1340": {
+          "time": "13h40",
+          "status": "FENÊTRE",
+          "nominal": {
+            "action": "Aucune action requise",
+            "detail": "Tout s'est bien passé. ICopitole consommera les fichiers à 13h45. Rien à faire."
+          },
+          "error": {
+            "action": "Intervention manuelle possible",
+            "detail": "Dernière chance avant le point de non-retour. L'opérateur peut corriger les données manquantes et relancer manuellement la collecte pour les stations en erreur via le portail d'administration."
+          }
+        },
+        "n1345": {
+          "time": "13h45",
+          "status": "CRITIQUE",
+          "nominal": {
+            "action": "ICopitole consomme les fichiers .data",
+            "detail": "La tâche planifiée ICopitole s'exécute. Elle lit les fichiers .data présents sur SRV21 et SRV22 et les intègre dans la base de gestion énergétique. Pipeline complet."
+          },
+          "error": {
+            "action": "ICopitole consomme — données incomplètes",
+            "detail": "ICopitole consomme ce qui est présent dans les fichiers .data, même si incomplet. C'est le point de non-retour : après cette heure, une correction nécessite de relancer manuellement les tâches ICopitole en aval."
+          }
+        },
+        "n1400": {
+          "time": "14h00",
+          "status": "AUTO",
+          "nominal": {
+            "action": "Données disponibles sur le portail web",
+            "detail": "Les données MongoDB (alimentées en parallèle par SCR-01) sont déjà disponibles sur le portail web depuis 13h35. Le pipeline est complet et les degrés jours du jour sont affichés."
+          },
+          "error": {
+            "action": "Correction tardive : relance ICopitole requise",
+            "detail": "Si une correction a été apportée après 13h45, il faut relancer manuellement les tâches ICopitole en aval pour propager les données corrigées. Le portail web, lui, peut être mis à jour indépendamment via MongoDB."
+          }
+        }
+      }
+    },
+    "decision": {
+      "kicker": "Décision technique",
+      "title": "Double écriture parallèle plutôt qu'une queue",
+      "content": "SCR-01 écrit simultanément dans les fichiers .data ET dans MongoDB. On aurait pu passer par une queue pour découpler les deux destinations — mais ICopitole consomme un format fichier legacy non négociable, et MongoDB sert le portail temps réel. Coupler les deux via une queue aurait ajouté un point de défaillance supplémentaire sans aucun bénéfice : si la queue tombe, les deux destinations tombent. Avec la double écriture directe, une erreur sur MongoDB n'empêche pas ICopitole de fonctionner, et vice versa."
+    },
+    "stations": {
+      "kicker": "Couverture",
+      "title": "22 stations MétéoFrance",
+      "description": "Pour chaque site ESLC, la station MétéoFrance active la plus proche disposant de données quotidiennes TN/TX.",
+      "columnSite": "Site",
+      "columnStation": "Station",
+      "columnDistance": "Distance"
+    },
+    "cta": {
+      "live": "Voir le site live",
+      "allProjects": "Tous les projets"
+    }
   }
 }

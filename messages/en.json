@@ -41,5 +41,123 @@
       "devops": "DevOps & infra",
       "languages": "Additional languages"
     }
+  },
+  "ProjectDegresJours": {
+    "breadcrumb": {
+      "home": "Home",
+      "projects": "Projects",
+      "current": "Degrés Jours"
+    },
+    "hero": {
+      "title": "Degrés Jours — Automated weather pipeline",
+      "pitch": "Daily weather data collection chain for 22 ESLC sites. A C# script triggers everything at 1:30 PM; by 1:45 PM the files are consumed by ICopitole — leaving a 10-minute intervention window.",
+      "stat1Value": "22",
+      "stat1Label": "Sites covered",
+      "stat2Value": "10 min",
+      "stat2Label": "Critical window",
+      "stat3Value": "Daily",
+      "stat3Label": "Frequency",
+      "stat4Value": "Solo",
+      "stat4Label": "Role"
+    },
+    "context": {
+      "kicker": "Context",
+      "title": "A daily operational challenge",
+      "p1": "Groupe ESLC operates 22 sites across France. Every day, degree days — a key thermal indicator for heating and air conditioning — must be collected from MétéoFrance and injected into ICopitole, the group's energy management software.",
+      "p2": "Before this project, collection was manual. I designed a fully automated pipeline: a C# script (SCR-01) runs every day at 1:30 PM, collects data from 22 stations, and writes it in parallel to .data files (for ICopitole) and MongoDB (for the real-time web portal)."
+    },
+    "architecture": {
+      "kicker": "Architecture",
+      "title": "Parallel dual-write",
+      "branch1Label": "To ICopitole",
+      "branch2Label": "To web portal"
+    },
+    "timeline": {
+      "kicker": "Interactive demo",
+      "title": "The critical 10-minute window",
+      "scenarioNominal": "Nominal scenario",
+      "scenarioError": "Error + manual fix",
+      "noReturn": "Point of no return",
+      "clickHint": "Click a step to see details",
+      "nodes": {
+        "n1330": {
+          "time": "1:30 PM",
+          "status": "AUTO",
+          "nominal": {
+            "action": "SCR-01 script triggered",
+            "detail": "The Windows scheduled task launches SCR-01. The script queries the MétéoFrance API for each of the 22 sites and collects yesterday's TN/TX data."
+          },
+          "error": {
+            "action": "SCR-01 script triggered",
+            "detail": "The Windows scheduled task launches SCR-01. The script queries the MétéoFrance API — one or more stations return an error (timeout, missing data, API quota exceeded)."
+          }
+        },
+        "n1335": {
+          "time": "1:35 PM",
+          "status": "AUTO",
+          "nominal": {
+            "action": "Summary email sent ✅",
+            "detail": "SCR-01 completes its run. A summary email is sent automatically: 22/22 stations collected, .data files written to SRV21 and SRV22, MongoDB up to date."
+          },
+          "error": {
+            "action": "Error alert email sent ❌",
+            "detail": "SCR-01 detects an anomaly and sends an alert email: failed stations listed, .data files partial or missing. The 10-minute intervention window starts now."
+          }
+        },
+        "n1340": {
+          "time": "1:40 PM",
+          "status": "WINDOW",
+          "nominal": {
+            "action": "No action required",
+            "detail": "Everything went smoothly. ICopitole will consume the files at 1:45 PM. Nothing to do."
+          },
+          "error": {
+            "action": "Manual intervention possible",
+            "detail": "Last chance before the point of no return. An operator can correct missing data and manually re-trigger collection for failed stations via the admin portal."
+          }
+        },
+        "n1345": {
+          "time": "1:45 PM",
+          "status": "CRITICAL",
+          "nominal": {
+            "action": "ICopitole consumes .data files",
+            "detail": "The ICopitole scheduled task runs. It reads the .data files present on SRV21 and SRV22 and integrates them into the energy management database. Pipeline complete."
+          },
+          "error": {
+            "action": "ICopitole consumes — incomplete data",
+            "detail": "ICopitole consumes whatever is present in the .data files, even if incomplete. This is the point of no return: after this time, a correction requires manually re-running the downstream ICopitole tasks."
+          }
+        },
+        "n1400": {
+          "time": "2:00 PM",
+          "status": "AUTO",
+          "nominal": {
+            "action": "Data available on the web portal",
+            "detail": "MongoDB data (populated in parallel by SCR-01) has been available on the web portal since 1:35 PM. The pipeline is complete and today's degree days are displayed."
+          },
+          "error": {
+            "action": "Late fix: ICopitole re-run required",
+            "detail": "If a correction was made after 1:45 PM, the downstream ICopitole tasks must be re-run manually to propagate the corrected data. The web portal can be updated independently via MongoDB."
+          }
+        }
+      }
+    },
+    "decision": {
+      "kicker": "Technical decision",
+      "title": "Parallel dual-write instead of a queue",
+      "content": "SCR-01 writes simultaneously to .data files AND MongoDB. A queue could have decoupled the two destinations — but ICopitole consumes a legacy file format that's non-negotiable, and MongoDB serves the real-time portal. Coupling both via a queue would have added an extra failure point for zero benefit: if the queue goes down, both destinations go down. With direct dual-write, a MongoDB error doesn't prevent ICopitole from running, and vice versa."
+    },
+    "stations": {
+      "kicker": "Coverage",
+      "title": "22 MétéoFrance stations",
+      "description": "For each ESLC site, the nearest active MétéoFrance station with available daily TN/TX data.",
+      "columnSite": "Site",
+      "columnStation": "Station",
+      "columnDistance": "Distance"
+    },
+    "cta": {
+      "live": "View live site",
+      "allProjects": "All projects"
+    }
   }
 }
