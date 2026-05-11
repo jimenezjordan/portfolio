@@ -12,10 +12,34 @@
   "Home": {
     "hero": {
       "available": "Available for new opportunities",
-      "title": "Full-stack web developer",
-      "subtitle": "I build business applications that make teams autonomous.",
+      "title": "I build tools that make teams autonomous",
+      "subtitle": "Fullstack & DevOps at ESLC since 2022. Specialized in rapidly shipping robust business applications: HRIS, data dashboards, API automation.",
       "cta": "View my projects",
       "ctaSecondary": "Get in touch"
+    },
+    "about": {
+      "kicker": "About",
+      "title": "Four years industrializing internal tools",
+      "p1": "Apprentice at Groupe ESLC since September 2022, and freelancer in parallel. My playground: the internal tools that didn't exist, or that needed to be rebuilt properly.",
+      "p2": "Concretely, I take a project from A to Z — architecture, front and back development, deployment, docs and follow-up. Solo if needed, in full autonomy."
+    },
+    "projects": {
+      "kicker": "Case studies",
+      "title": "Two projects, two different business problems",
+      "subtitle": "Click on a project to read the full case study with technical choices, architecture decisions and interactive demos.",
+      "viewCase": "Read case study",
+      "fromrhTitle": "FormRH — Dynamic admin",
+      "fromrhSummary": "Migrated all app configs to MongoDB so the IT team became autonomous — no more redeploys for every change.",
+      "degresJoursTitle": "Degrés Jours — Weather pipeline",
+      "degresJoursSummary": "Daily collection pipeline from 22 MétéoFrance stations with a critical 10-minute intervention window."
+    },
+    "stack": {
+      "kicker": "Tech stack",
+      "title": "The tools I use day to day",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "devops": "DevOps & infra",
+      "languages": "Additional languages"
     }
   }
 }

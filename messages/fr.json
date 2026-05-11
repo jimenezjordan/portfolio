@@ -12,10 +12,34 @@
   "Home": {
     "hero": {
       "available": "Disponible pour de nouvelles opportunités",
-      "title": "Développeur web full-stack",
-      "subtitle": "Je construis des applications métier qui rendent les équipes autonomes.",
+      "title": "Je construis des outils qui rendent les équipes autonomes",
+      "subtitle": "Fullstack & DevOps chez ESLC depuis 2022. Spécialisé dans la mise en production rapide d'applications métier robustes : SIRH, dashboards data, automatisation d'API.",
       "cta": "Voir mes projets",
       "ctaSecondary": "Me contacter"
+    },
+    "about": {
+      "kicker": "À propos",
+      "title": "Quatre ans à industrialiser des outils internes",
+      "p1": "Alternant chez Groupe ESLC depuis septembre 2022 et freelance en parallèle. Mon terrain : les outils internes qui n'existaient pas, ou qui devaient être refaits proprement.",
+      "p2": "Concrètement, je prends en charge un projet de A à Z — l'architecture, le développement front et back, le déploiement, la doc et le suivi. Tout seul si nécessaire, en autonomie complète."
+    },
+    "projects": {
+      "kicker": "Études de cas",
+      "title": "Deux projets, deux problèmes métier différents",
+      "subtitle": "Cliquez sur un projet pour voir l'étude de cas complète avec les choix techniques, les décisions d'architecture et les démos interactives.",
+      "viewCase": "Étude de cas",
+      "fromrhTitle": "FormRH — Admin dynamique",
+      "fromrhSummary": "Migration de toutes les configs applicatives vers MongoDB pour rendre l'équipe SI autonome — fini les redéploiements à chaque modification.",
+      "degresJoursTitle": "Degrés Jours — Collecte météo",
+      "degresJoursSummary": "Chaîne de collecte quotidienne de 22 stations MétéoFrance avec une fenêtre d'intervention critique de 10 minutes."
+    },
+    "stack": {
+      "kicker": "Stack technique",
+      "title": "Les outils que j'utilise au quotidien",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "devops": "DevOps & infra",
+      "languages": "Langages additionnels"
     }
   }
 }

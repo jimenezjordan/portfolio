@@ -27,7 +27,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={inter.variable}>
-      <body className="bg-neutral-50 text-neutral-900 antialiased">
+      <body className="bg-white text-neutral-900 antialiased">
         <NextIntlClientProvider>
           <Navbar />
           <main className="min-h-screen">{children}</main>

@@ -11,7 +11,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 border-b border-neutral-200/70 bg-neutral-50/80 backdrop-blur">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
         <Link href="/" className="font-medium tracking-tight">
-          Jordan.dev
+          Jordan Jimenez
         </Link>
 
         <ul className="hidden items-center gap-8 text-sm text-neutral-600 md:flex">

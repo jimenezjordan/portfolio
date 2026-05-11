@@ -14,7 +14,7 @@ export default function Footer() {
 
                 <div className="flex items-center gap-4 text-neutral-500">
                     <a
-                        href="https://github.com/ton-pseudo"
+                        href="https://github.com/jimenezjordan"
                         target="_blank"
                         rel="noreferrer"
                         aria-label="GitHub"
@@ -22,7 +22,7 @@ export default function Footer() {
                     >
                     </a>
                     <a
-                        href="https://linkedin.com/in/ton-profil"
+                        href="https://www.linkedin.com/in/jordan-jimenez-a8423a224/"
                         target="_blank"
                         rel="noreferrer"
                         aria-label="LinkedIn"
@@ -30,7 +30,7 @@ export default function Footer() {
                     >
                     </a>
                     <a
-                        href="mailto:ton@mail.com"
+                        href="mailto:contact@jordan-jimenez.dev"
                         aria-label="Email"
                         className="hover:text-neutral-900"
                     >
