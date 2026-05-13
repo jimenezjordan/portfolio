@@ -1,12 +1,13 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { ArrowRight, Mail } from 'lucide-react';
 
 export default function Hero() {
   const t = useTranslations('Home.hero');
+  const reducedMotion = useReducedMotion();
 
   return (
     <section className="relative overflow-hidden bg-white">
@@ -25,7 +26,7 @@ export default function Hero() {
 
       <div className="relative mx-auto max-w-5xl px-6 pt-24 pb-36 md:pt-40 md:pb-48">
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={reducedMotion ? {} : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1.5 text-xs font-semibold text-emerald-700"
@@ -38,7 +39,7 @@ export default function Hero() {
         </motion.div>
 
         <motion.h1
-          initial={{ opacity: 0, y: 28 }}
+          initial={reducedMotion ? {} : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-4xl text-5xl font-bold tracking-tight text-neutral-900 md:text-7xl md:leading-[1.05]"
@@ -47,7 +48,7 @@ export default function Hero() {
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 28 }}
+          initial={reducedMotion ? {} : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="mt-7 max-w-lg text-lg leading-relaxed text-neutral-500"
@@ -56,21 +57,21 @@ export default function Hero() {
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 28 }}
+          initial={reducedMotion ? {} : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="mt-10 flex flex-wrap items-center gap-3"
         >
           <Link
             href="/projets"
-            className="group inline-flex items-center gap-2 rounded-xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-neutral-700"
+            className="group inline-flex items-center gap-2 rounded-xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
           >
             {t('cta')}
             <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
           </Link>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900"
+            className="inline-flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
           >
             <Mail size={15} />
             {t('ctaSecondary')}
@@ -79,7 +80,7 @@ export default function Hero() {
 
         {/* Bottom decorative line */}
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={reducedMotion ? {} : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.6 }}
           className="mt-20 flex items-center gap-8 border-t border-neutral-200/60 pt-8 text-xs text-neutral-400"

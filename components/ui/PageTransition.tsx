@@ -1,10 +1,15 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { usePathname } from '@/i18n/routing';
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const reducedMotion = useReducedMotion();
+
+  if (reducedMotion) {
+    return <div key={pathname}>{children}</div>;
+  }
 
   return (
     <motion.div

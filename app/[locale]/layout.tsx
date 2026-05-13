@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import PageTransition from '@/components/ui/PageTransition';
+import { Analytics } from '@vercel/analytics/react';
 import '../globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
@@ -72,11 +73,18 @@ export default async function LocaleLayout({
       </head>
       <body className="bg-white text-neutral-900 antialiased">
         <NextIntlClientProvider>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-neutral-900 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:outline-none"
+          >
+            Aller au contenu principal
+          </a>
           <Navbar />
-          <main className="min-h-screen">
+          <main id="main-content" className="min-h-screen">
             <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
+          <Analytics />
         </NextIntlClientProvider>
       </body>
     </html>

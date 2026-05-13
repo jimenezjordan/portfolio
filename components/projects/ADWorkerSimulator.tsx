@@ -218,7 +218,7 @@ export default function ADWorkerSimulator() {
               key={id}
               onClick={() => { if (!running) { setPreset(id); reset(); } }}
               disabled={running}
-              className={`rounded-full px-3 py-1 text-xs font-semibold transition disabled:cursor-not-allowed ${
+              className={`rounded-full px-3 py-1 text-xs font-semibold transition disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 focus-visible:ring-offset-neutral-900 ${
                 preset === id
                   ? 'bg-violet-600 text-white shadow'
                   : 'border border-neutral-700 text-neutral-400 hover:border-neutral-500 hover:text-neutral-200'
@@ -239,7 +239,7 @@ export default function ADWorkerSimulator() {
           {done ? (
             <button
               onClick={reset}
-              className="rounded-lg border border-neutral-700 px-4 py-1.5 text-xs font-semibold text-neutral-300 transition hover:border-neutral-500 hover:text-white"
+              className="rounded-lg border border-neutral-700 px-4 py-1.5 text-xs font-semibold text-neutral-300 transition hover:border-neutral-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 focus-visible:ring-offset-neutral-900"
             >
               {t('resetButton')}
             </button>
@@ -247,7 +247,7 @@ export default function ADWorkerSimulator() {
             <button
               onClick={run}
               disabled={running}
-              className="rounded-lg bg-violet-600 px-4 py-1.5 text-xs font-semibold text-white shadow transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg bg-violet-600 px-4 py-1.5 text-xs font-semibold text-white shadow transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 focus-visible:ring-offset-neutral-900"
             >
               {t('runButton')}
             </button>
@@ -258,6 +258,9 @@ export default function ADWorkerSimulator() {
       {/* Terminal */}
       <div
         ref={terminalRef}
+        role="log"
+        aria-label="Terminal de simulation Active Directory"
+        aria-live="polite"
         className="h-80 overflow-y-auto p-5 font-mono text-xs leading-relaxed"
         style={{ background: '#0F1614', color: '#C7E5D0' }}
       >

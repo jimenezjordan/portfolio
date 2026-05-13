@@ -20,7 +20,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-neutral-200/70 bg-white/90 backdrop-blur-md">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <Link href="/" className="group flex items-center gap-2.5">
+        <Link href="/" className="group flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 rounded-md">
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 transition-transform duration-200 group-hover:scale-125" />
           <span className="font-semibold tracking-tight text-neutral-900">
             Jordan Jimenez
@@ -34,7 +34,7 @@ export default function Navbar() {
               <li key={href}>
                 <Link
                   href={href}
-                  className={`group relative pb-px text-sm font-medium transition-colors duration-150 ${
+                  className={`group relative pb-px text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 rounded-sm ${
                     active
                       ? 'text-neutral-900'
                       : 'text-neutral-500 hover:text-neutral-900'
