@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import ProjectHero from '@/components/projects/ProjectHero';
@@ -8,6 +10,30 @@ import StationGrid from '@/components/projects/StationGrid';
 import AppPagesGrid from '@/components/projects/AppPagesGrid';
 import { Link } from '@/i18n/routing';
 import { ArrowUpRight, ArrowLeft } from 'lucide-react';
+
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://jordan-jimenez.dev';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Metadata' });
+  return {
+    title: t('degresJours.title'),
+    description: t('degresJours.description'),
+    openGraph: {
+      title: t('degresJours.title'),
+      description: t('degresJours.description'),
+      images: [{ url: '/og/degres-jours.png', width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: `${BASE}/projets/degres-jours`,
+      languages: { fr: `${BASE}/projets/degres-jours`, en: `${BASE}/en/projets/degres-jours` },
+    },
+  };
+}
 
 export default function DegresJoursPage() {
   const t = useTranslations('ProjectDegresJours');

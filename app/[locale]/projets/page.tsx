@@ -1,9 +1,35 @@
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { projects } from '@/lib/projects';
 import ProjectCard from '@/components/projects/ProjectCard';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import { ArrowRight } from 'lucide-react';
+
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://jordan-jimenez.dev';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Metadata' });
+  return {
+    title: t('projets.title'),
+    description: t('projets.description'),
+    openGraph: {
+      title: t('projets.title'),
+      description: t('projets.description'),
+      images: [{ url: '/og/home.png', width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: `${BASE}/projets`,
+      languages: { fr: `${BASE}/projets`, en: `${BASE}/en/projets` },
+    },
+  };
+}
 
 export default function ProjetsPage() {
   const t = useTranslations('Projects');

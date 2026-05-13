@@ -1,7 +1,33 @@
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { Mail, ArrowUpRight } from 'lucide-react';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
+
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://jordan-jimenez.dev';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Metadata' });
+  return {
+    title: t('contact.title'),
+    description: t('contact.description'),
+    openGraph: {
+      title: t('contact.title'),
+      description: t('contact.description'),
+      images: [{ url: '/og/home.png', width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: `${BASE}/contact`,
+      languages: { fr: `${BASE}/contact`, en: `${BASE}/en/contact` },
+    },
+  };
+}
 
 export default function ContactPage() {
   const t = useTranslations('Contact');

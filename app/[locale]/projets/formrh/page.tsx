@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import ProjectHero from '@/components/projects/ProjectHero';
@@ -8,6 +10,30 @@ import GroupAttributionDiagram from '@/components/projects/GroupAttributionDiagr
 import FunctionalSpacesGrid from '@/components/projects/FunctionalSpacesGrid';
 import DecisionCallout from '@/components/projects/DecisionCallout';
 import { Link } from '@/i18n/routing';
+
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://jordan-jimenez.dev';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Metadata' });
+  return {
+    title: t('formrh.title'),
+    description: t('formrh.description'),
+    openGraph: {
+      title: t('formrh.title'),
+      description: t('formrh.description'),
+      images: [{ url: '/og/formrh.png', width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: `${BASE}/projets/formrh`,
+      languages: { fr: `${BASE}/projets/formrh`, en: `${BASE}/en/projets/formrh` },
+    },
+  };
+}
 import { ArrowLeft } from 'lucide-react';
 
 export default function FormRHPage() {

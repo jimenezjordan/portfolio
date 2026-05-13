@@ -1,6 +1,32 @@
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { Download, ArrowRight } from 'lucide-react';
+
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://jordan-jimenez.dev';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Metadata' });
+  return {
+    title: t('parcours.title'),
+    description: t('parcours.description'),
+    openGraph: {
+      title: t('parcours.title'),
+      description: t('parcours.description'),
+      images: [{ url: '/og/parcours.png', width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: `${BASE}/parcours`,
+      languages: { fr: `${BASE}/parcours`, en: `${BASE}/en/parcours` },
+    },
+  };
+}
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import TimelineExperience from '@/components/parcours/TimelineExperience';
 import FormationsList from '@/components/parcours/FormationsList';
