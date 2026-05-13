@@ -1,8 +1,11 @@
+import { Link } from '@/i18n/routing';
 import StatCard from './StatCard';
 
 type Stat = { value: string; label: string };
+type BreadcrumbItem = { label: string; href?: string };
 
 type Props = {
+  breadcrumb?: BreadcrumbItem[];
   tags: string[];
   title: string;
   pitch: string;
@@ -27,7 +30,7 @@ const ACCENT = {
   },
 } as const;
 
-export default function ProjectHero({ tags, title, pitch, stats, accentColor = 'sky' }: Props) {
+export default function ProjectHero({ breadcrumb, tags, title, pitch, stats, accentColor = 'sky' }: Props) {
   const a = ACCENT[accentColor];
 
   return (
@@ -43,7 +46,27 @@ export default function ProjectHero({ tags, title, pitch, stats, accentColor = '
       {/* Glow */}
       <div className={`pointer-events-none absolute -top-32 right-0 h-96 w-96 rounded-full ${a.glow} opacity-10 blur-3xl`} />
 
-      <div className="relative mx-auto max-w-5xl px-6 pt-10 pb-16">
+      <div className="relative mx-auto max-w-5xl px-6 pt-6 pb-16">
+        {/* Breadcrumb */}
+        {breadcrumb && (
+          <nav aria-label="Breadcrumb" className="mb-8">
+            <ol className="flex items-center gap-2 text-sm text-white/40">
+              {breadcrumb.map((item, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  {i > 0 && <span aria-hidden="true">›</span>}
+                  {item.href ? (
+                    <Link href={item.href} className="transition-colors hover:text-white/70">
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <span className="font-medium text-white/75">{item.label}</span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         <div className="flex flex-wrap gap-2 mb-6">
           {tags.map((tag) => (
             <span

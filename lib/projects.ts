@@ -13,7 +13,7 @@ export const projects: Project[] = [
     slug: 'degres-jours',
     titleKey: 'degresJoursTitle',
     summaryKey: 'degresJoursSummary',
-    tags: ['Next.js', 'Node.js', 'MongoDB', 'Docker', 'C#'],
+    tags: ['Next.js', 'Express.js', 'MongoDB', 'Docker', 'Chokidar'],
     year: '2026',
     role: 'Solo',
     image: '/projects/degres-jours/cover.jpg'

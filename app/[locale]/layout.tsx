@@ -4,6 +4,7 @@ import { routing } from '@/i18n/routing';
 import { Inter } from 'next/font/google';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import PageTransition from '@/components/ui/PageTransition';
 import '../globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
@@ -30,7 +31,9 @@ export default async function LocaleLayout({
       <body className="bg-white text-neutral-900 antialiased">
         <NextIntlClientProvider>
           <Navbar />
-          <main className="min-h-screen">{children}</main>
+          <main className="min-h-screen">
+            <PageTransition>{children}</PageTransition>
+          </main>
           <Footer />
         </NextIntlClientProvider>
       </body>

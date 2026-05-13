@@ -1,27 +1,28 @@
 import { useTranslations } from 'next-intl';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import ProjectHero from '@/components/projects/ProjectHero';
-import ArchitectureDiagram from '@/components/projects/ArchitectureDiagram';
-import CriticalTimeline from '@/components/projects/CriticalTimeline';
+import WorkflowRoles from '@/components/projects/WorkflowRoles';
+import FormRHArchitectureDiagram from '@/components/projects/FormRHArchitectureDiagram';
+import ADWorkerSimulator from '@/components/projects/ADWorkerSimulator';
+import GroupAttributionDiagram from '@/components/projects/GroupAttributionDiagram';
+import FunctionalSpacesGrid from '@/components/projects/FunctionalSpacesGrid';
 import DecisionCallout from '@/components/projects/DecisionCallout';
-import StationGrid from '@/components/projects/StationGrid';
-import AppPagesGrid from '@/components/projects/AppPagesGrid';
 import { Link } from '@/i18n/routing';
-import { ArrowUpRight, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
-export default function DegresJoursPage() {
-  const t = useTranslations('ProjectDegresJours');
+export default function FormRHPage() {
+  const t = useTranslations('ProjectFormRH');
 
   return (
     <>
-      {/* Hero — gradient slate → sky, breadcrumb intégré */}
+      {/* Hero — gradient slate → violet, breadcrumb intégré */}
       <ProjectHero
         breadcrumb={[
           { label: t('breadcrumb.home'), href: '/' },
           { label: t('breadcrumb.projects'), href: '/projets' },
           { label: t('breadcrumb.current') },
         ]}
-        tags={['Next.js', 'Express.js', 'MongoDB', 'Docker', 'Chokidar']}
+        tags={['Next.js', 'Express', 'MongoDB', 'LDAP', 'Active Directory', 'Azure AD', 'NextAuth']}
         title={t('hero.title')}
         pitch={t('hero.pitch')}
         stats={[
@@ -30,7 +31,7 @@ export default function DegresJoursPage() {
           { value: t('hero.stat3Value'), label: t('hero.stat3Label') },
           { value: t('hero.stat4Value'), label: t('hero.stat4Label') },
         ]}
-        accentColor="sky"
+        accentColor="violet"
       />
 
       {/* Contexte — blanc */}
@@ -55,11 +56,28 @@ export default function DegresJoursPage() {
         </div>
       </section>
 
-      {/* Architecture — fond sombre, visuel technique */}
+      {/* Rôles — fond neutre clair */}
+      <section className="border-t border-neutral-100 bg-neutral-50">
+        <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
+          <RevealOnScroll>
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+              {t('roles.kicker')}
+            </span>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+              {t('roles.title')}
+            </h2>
+          </RevealOnScroll>
+          <RevealOnScroll delay={0.1} className="mt-10">
+            <WorkflowRoles />
+          </RevealOnScroll>
+        </div>
+      </section>
+
+      {/* Architecture — fond sombre */}
       <section className="border-t border-neutral-800 bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
-            <span className="text-xs font-semibold uppercase tracking-wider text-sky-500">
+            <span className="text-xs font-semibold uppercase tracking-wider text-violet-500">
               {t('architecture.kicker')}
             </span>
             <h2 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
@@ -67,75 +85,90 @@ export default function DegresJoursPage() {
             </h2>
           </RevealOnScroll>
           <RevealOnScroll delay={0.1} className="mt-10">
-            <ArchitectureDiagram
-              branch1Label={t('architecture.branch1Label')}
-              branch2Label={t('architecture.branch2Label')}
-            />
+            <FormRHArchitectureDiagram />
           </RevealOnScroll>
         </div>
       </section>
 
-      {/* Timeline — fond slate très sombre */}
+      {/* Simulator — fond slate très sombre */}
       <section className="border-t border-slate-800 bg-slate-950">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
-            <span className="text-xs font-semibold uppercase tracking-wider text-sky-500">
-              {t('timeline.kicker')}
+            <span className="text-xs font-semibold uppercase tracking-wider text-violet-400">
+              {t('simulator.kicker')}
             </span>
             <h2 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
-              {t('timeline.title')}
+              {t('simulator.title')}
             </h2>
           </RevealOnScroll>
           <RevealOnScroll delay={0.1} className="mt-10">
-            <CriticalTimeline />
+            <ADWorkerSimulator />
           </RevealOnScroll>
         </div>
       </section>
 
-      {/* Décision technique — blanc avec accents */}
+      {/* Décisions techniques — blanc */}
       <section className="border-t border-neutral-200/70 bg-white">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
+          <div className="grid gap-10 md:grid-cols-3">
+            <RevealOnScroll>
+              <DecisionCallout
+                kicker={t('decision1.kicker')}
+                title={t('decision1.title')}
+              >
+                {t('decision1.content')}
+              </DecisionCallout>
+            </RevealOnScroll>
+            <RevealOnScroll delay={0.05}>
+              <DecisionCallout
+                kicker={t('decision2.kicker')}
+                title={t('decision2.title')}
+              >
+                {t('decision2.content')}
+              </DecisionCallout>
+            </RevealOnScroll>
+            <RevealOnScroll delay={0.1}>
+              <DecisionCallout
+                kicker={t('decision3.kicker')}
+                title={t('decision3.title')}
+              >
+                {t('decision3.content')}
+              </DecisionCallout>
+            </RevealOnScroll>
+          </div>
+        </div>
+      </section>
+
+      {/* Algorithme — fond neutre */}
+      <section className="border-t border-neutral-200 bg-neutral-50">
+        <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
-            <DecisionCallout
-              kicker={t('decision.kicker')}
-              title={t('decision.title')}
-            >
-              {t('decision.content')}
-            </DecisionCallout>
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+              {t('algo.kicker')}
+            </span>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+              {t('algo.title')}
+            </h2>
+          </RevealOnScroll>
+          <RevealOnScroll delay={0.1} className="mt-10">
+            <GroupAttributionDiagram />
           </RevealOnScroll>
         </div>
       </section>
 
-      {/* Pages de l'application — fond sky très léger */}
-      <section className="border-t border-sky-100 bg-sky-50">
+      {/* Espaces fonctionnels — teinte violet légère */}
+      <section className="border-t border-violet-100 bg-violet-50">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
-            <span className="text-xs font-semibold uppercase tracking-wider text-sky-600">
-              {t('pages.kicker')}
+            <span className="text-xs font-semibold uppercase tracking-wider text-violet-600">
+              {t('spaces.kicker')}
             </span>
             <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
-              {t('pages.title')}
+              {t('spaces.title')}
             </h2>
           </RevealOnScroll>
           <RevealOnScroll delay={0.1} className="mt-10">
-            <AppPagesGrid />
-          </RevealOnScroll>
-        </div>
-      </section>
-
-      {/* Stations — couverture géographique */}
-      <section className="border-t border-sky-100 bg-white">
-        <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
-          <RevealOnScroll>
-            <span className="text-xs font-semibold uppercase tracking-wider text-sky-600">
-              {t('stations.kicker')}
-            </span>
-            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
-              {t('stations.title')}
-            </h2>
-          </RevealOnScroll>
-          <RevealOnScroll delay={0.1} className="mt-10">
-            <StationGrid />
+            <FunctionalSpacesGrid />
           </RevealOnScroll>
         </div>
       </section>
@@ -145,15 +178,6 @@ export default function DegresJoursPage() {
         <div className="mx-auto max-w-5xl px-6 py-16 md:py-20">
           <RevealOnScroll>
             <div className="flex flex-wrap items-center gap-4">
-              <a
-                href="https://degres-jours.eslc.fr"
-                target="_blank"
-                rel="noreferrer"
-                className="group inline-flex items-center gap-2 rounded-xl bg-sky-500 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-sky-400"
-              >
-                {t('cta.live')}
-                <ArrowUpRight size={16} className="transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
               <Link
                 href="/projets"
                 className="inline-flex items-center gap-2 rounded-xl border border-neutral-700 bg-transparent px-6 py-3 text-sm font-semibold text-neutral-300 transition hover:border-neutral-500 hover:text-white"

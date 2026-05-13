@@ -29,9 +29,9 @@
       "subtitle": "Cliquez sur un projet pour voir l'étude de cas complète avec les choix techniques, les décisions d'architecture et les démos interactives.",
       "viewCase": "Étude de cas",
       "fromrhTitle": "FormRH — Admin dynamique",
-      "fromrhSummary": "Migration de toutes les configs applicatives vers MongoDB pour rendre l'équipe SI autonome — fini les redéploiements à chaque modification.",
+      "fromrhSummary": "Remplace la chaîne d'emails manuelle entre RH, managers et SI : un formulaire suffit pour déclencher le provisioning AD avec les bons groupes, les rappels automatiques et la création du compte N2F.",
       "degresJoursTitle": "Degrés Jours — Collecte météo",
-      "degresJoursSummary": "Chaîne de collecte quotidienne de 22 stations MétéoFrance avec une fenêtre d'intervention critique de 10 minutes."
+      "degresJoursSummary": "Remplace les fichiers Excel envoyés par email : ingestion automatique des fichiers Météo France en moins de 10 secondes, DJU calculés en temps réel pour le suivi des contrats fioul."
     },
     "stack": {
       "kicker": "Stack technique",
@@ -50,21 +50,21 @@
     },
     "hero": {
       "title": "Degrés Jours — Collecte météo automatisée",
-      "pitch": "Chaîne de collecte quotidienne des données météo pour 22 sites ESLC. Un script C# déclenche tout à 13h30 ; à 13h45, les fichiers sont consommés par ICopitole — fenêtre d'intervention de 10 minutes.",
-      "stat1Value": "22",
-      "stat1Label": "Sites couverts",
-      "stat2Value": "10 min",
-      "stat2Label": "Fenêtre critique",
-      "stat3Value": "Daily",
-      "stat3Label": "Fréquence",
+      "pitch": "Avant : fichiers Excel envoyés par email, saisie manuelle, plusieurs versions en circulation. Après : un fichier .data déposé sur le serveur suffit — Chokidar le détecte, l'ingère en moins de 10 secondes, et les DJU sont calculés automatiquement.",
+      "stat1Value": "20",
+      "stat1Label": "Stations Météo France",
+      "stat2Value": "< 10s",
+      "stat2Label": "Ingestion auto",
+      "stat3Value": "4",
+      "stat3Label": "Vues métier",
       "stat4Value": "Solo",
       "stat4Label": "Rôle"
     },
     "context": {
-      "kicker": "Le contexte",
-      "title": "Un problème métier quotidien",
-      "p1": "Groupe ESLC exploite 22 sites répartis en France. Chaque jour, les degrés jours — un indicateur thermique clé pour le chauffage et la climatisation — doivent être collectés depuis MétéoFrance et injectés dans ICopitole, le logiciel de gestion énergétique du groupe.",
-      "p2": "Avant ce projet, la collecte était manuelle. J'ai conçu une chaîne entièrement automatisée : un script C# (SCR-01) tourne chaque jour à 13h30, collecte les données des 22 stations, les écrit en parallèle dans des fichiers .data (pour ICopitole) et dans MongoDB (pour le portail web temps réel)."
+      "kicker": "Le problème",
+      "title": "Des fichiers Excel partagés par email, des versions multiples, des erreurs de saisie",
+      "p1": "Avant MeteoESLC, le calcul des DJU et le suivi des températures étaient entièrement manuels : copier-coller les données Météo France vers Excel, envoyer le fichier par email à chaque interlocuteur, gérer les versions multiples (v1, v2, v2_final…), corriger les erreurs de saisie après diffusion. Ce processus récurrent représentait plusieurs heures par mois — avec une dépendance à une seule personne connaissant le fichier.",
+      "p2": "MeteoESLC remplace tout ce processus par une source de vérité unique. Dès qu'un fichier .data Météo France est déposé dans le dossier surveillé, Chokidar le détecte (polling toutes les 5s) et l'ingère dans MongoDB Atlas en moins de 10 secondes — sans doublon grâce à l'index unique (poste, date). Les 4 vues métier sont instantanément à jour pour tous les utilisateurs, depuis n'importe quel poste."
     },
     "architecture": {
       "kicker": "Architecture",
@@ -144,12 +144,32 @@
     },
     "decision": {
       "kicker": "Décision technique",
-      "title": "Double écriture parallèle plutôt qu'une queue",
-      "content": "SCR-01 écrit simultanément dans les fichiers .data ET dans MongoDB. On aurait pu passer par une queue pour découpler les deux destinations — mais ICopitole consomme un format fichier legacy non négociable, et MongoDB sert le portail temps réel. Coupler les deux via une queue aurait ajouté un point de défaillance supplémentaire sans aucun bénéfice : si la queue tombe, les deux destinations tombent. Avec la double écriture directe, une erreur sur MongoDB n'empêche pas ICopitole de fonctionner, et vice versa."
+      "title": "usePolling: true — Chokidar sur partage réseau SMB",
+      "content": "Chokidar surveille le dossier de dépôt avec usePolling: true — un choix non-négociable en production. WATCH_DIR pointe vers un partage réseau SMB Windows. Sans polling, les événements fs.watch natifs de Node.js ne se déclenchent pas sur les lecteurs réseau. Avec interval: 5000 et awaitWriteFinish.stabilityThreshold: 2000, le watcher attend que le fichier soit stable (écriture terminée) avant d'ingérer — aucun risque de lire un fichier à moitié écrit. Sur un disque local, usePolling: false serait plus efficace ; la contrainte réseau l'emporte."
+    },
+    "pages": {
+      "kicker": "L'application",
+      "title": "4 vues métier, une source de vérité",
+      "p1": {
+        "title": "Tableau de bord",
+        "desc": "Dernier jour importé : KPIs (stations actives, TN/TX moyens, DJU cumulés), alertes gel, graphique barres. Point d'entrée quotidien."
+      },
+      "p2": {
+        "title": "Bilan journalier",
+        "desc": "N'importe quel jour passé, filtrable par station. Graphique TN/TX et export CSV compatible Excel (séparateur «;», BOM UTF-8)."
+      },
+      "p3": {
+        "title": "Évolution hebdomadaire",
+        "desc": "Courbes TN, Moyenne et TX sur une semaine ISO pour une station. Seules les semaines ayant des données sont proposées."
+      },
+      "p4": {
+        "title": "Bilan mensuel DJU",
+        "desc": "Calcul D1/D2/D3 sur un mois complet. Export CSV prêt pour les fournisseurs de fioul et le suivi des contrats énergétiques."
+      }
     },
     "stations": {
       "kicker": "Couverture",
-      "title": "22 stations MétéoFrance",
+      "title": "20 stations Météo France",
       "description": "Pour chaque site ESLC, la station MétéoFrance active la plus proche disposant de données quotidiennes TN/TX.",
       "columnSite": "Site",
       "columnStation": "Station",
@@ -158,6 +178,270 @@
     "cta": {
       "live": "Voir le site live",
       "allProjects": "Tous les projets"
+    }
+  },
+  "ProjectFormRH": {
+    "breadcrumb": {
+      "home": "Accueil",
+      "projects": "Projets",
+      "current": "FormRH"
+    },
+    "hero": {
+      "title": "FormRH — Onboarding & offboarding automatisés",
+      "pitch": "Avant FormRH : 3 échanges d'emails par recrutement, une création AD manuelle, et des droits parfois faux le jour J. Aujourd'hui : les RH remplissent un formulaire, tout le reste s'enchaîne automatiquement.",
+      "stat1Value": "4 ans",
+      "stat1Label": "En production",
+      "stat2Value": "0",
+      "stat2Label": "Création AD manuelle",
+      "stat3Value": "8",
+      "stat3Label": "Onglets admin configurables",
+      "stat4Value": "Solo",
+      "stat4Label": "Rôle"
+    },
+    "context": {
+      "kicker": "Le problème",
+      "title": "3 emails, une création à la main, des droits parfois faux",
+      "p1": "Chaque recrutement chez ESLC déclenchait une chaîne manuelle : les RH envoyaient les infos du collaborateur par email au manager, le manager répondait avec les besoins matériels, le SI créait le compte Active Directory à la main — et attribuait les groupes de mémoire. Résultat : des oublis, des droits incorrects, des accès manquants le jour d'arrivée.",
+      "p2": "J'ai conçu FormRH pour remplacer toute cette coordination par un workflow structuré. Les RH saisissent un formulaire, le manager est notifié automatiquement (avec rappels quotidiens s'il ne répond pas), l'admin crée le compte AD en un clic — le worker calcule les bons groupes selon l'emploi et le service, crée le compte LDAP dans la bonne OU, et génère un fichier récap avec les identifiants. Zéro oubli possible."
+    },
+    "roles": {
+      "kicker": "Le workflow complet",
+      "title": "Du recrutement au compte actif — sans email manuel",
+      "autoLabel": "Automatique",
+      "s1": {
+        "role": "RH",
+        "title": "Saisie du dossier",
+        "action": "Prénom, nom, emploi, service, ville, date d'arrivée, manager rattaché",
+        "auto1": "Email envoyé automatiquement au manager pour compléter le formulaire"
+      },
+      "s2": {
+        "role": "Manager",
+        "title": "Validation + besoins matériels",
+        "action": "PC portable/fixe, badge, téléphone, logiciels (Icopitole, Sage, N2F…), notes libres",
+        "auto1": "Rappel email automatique chaque jour si le formulaire n'est pas complété",
+        "auto2": "Email récapitulatif envoyé au SI avec toutes les infos à la validation"
+      },
+      "s3": {
+        "role": "Admin SI",
+        "title": "Lancement de la création AD",
+        "action": "Sélection des collaborateurs éligibles + clic \"Créer les comptes AD\"",
+        "auto1": "Compte LDAP créé dans la bonne Unité Organisationnelle (société + ville)",
+        "auto2": "Groupes AD attribués selon les règles emploi/service configurées",
+        "auto3": "Fichier identifiants (login + mot de passe temporaire) généré et archivé"
+      },
+      "s4": {
+        "role": "Admin SI",
+        "title": "Suivi des tâches post-création",
+        "action": "Cocher les installations (logiciels, matériels) dans l'historique /histo",
+        "auto1": "Tableau de bord temps réel : tâches en attente, collaborateurs à traiter"
+      },
+      "s5": {
+        "role": "Auto",
+        "title": "Création du compte N2F",
+        "action": "Déclenché depuis la fiche historique si N2F était coché dans le formulaire manager",
+        "auto1": "Nom normalisé (sans accents), email manager récupéré depuis Azure AD",
+        "auto2": "Compte créé via l'API N2F avec les codes analytiques appropriés"
+      }
+    },
+    "architecture": {
+      "kicker": "Architecture",
+      "title": "Trois couches, quatre intégrations"
+    },
+    "simulator": {
+      "kicker": "Démo interactive",
+      "title": "Simulation du worker Active Directory",
+      "presetStandard": "Standard",
+      "presetEmploiSpecial": "Emploi spécial",
+      "presetWildcards": "Wildcards",
+      "runButton": "▶ Simuler",
+      "resetButton": "⟳ Réinitialiser",
+      "runningLabel": "Exécution en cours..."
+    },
+    "decision1": {
+      "kicker": "Décision technique",
+      "title": "Traitement LDAP par lots de 3",
+      "content": "Le worker AD traite les collaborateurs par lots de 3 plutôt qu'en masse. Interroger un contrôleur de domaine avec des centaines de requêtes simultanées peut le saturer et impacter l'authentification de tous les utilisateurs du réseau. Le batch-of-3 est un compromis délibéré : légèrement plus lent, mais sans aucun risque d'impact sur la prod."
+    },
+    "decision2": {
+      "kicker": "Décision technique",
+      "title": "Cache LRU pour Microsoft Graph API",
+      "content": "L'API Microsoft Graph délivre des tokens OAuth avec une durée de vie de 60 minutes, mais chaque appel de renouvellement coûte 100-200 ms. Avec un cache LRU de 15 minutes, un token valide est réutilisé pour toutes les requêtes de la fenêtre. Résultat : temps de réponse des appels Graph divisé par 3 en pic d'activité."
+    },
+    "decision3": {
+      "kicker": "Décision technique",
+      "title": "Migration zéro-downtime vers MongoDB",
+      "content": "La migration des configurations depuis les fichiers JSON statiques vers MongoDB s'est faite en deux semaines de double écriture : chaque modification était écrite dans les deux systèmes en parallèle, et l'application lisait toujours depuis les fichiers. Une fois la parité vérifiée, le cut-over a basculé la source de vérité vers MongoDB en une seule ligne de config — sans interruption de service."
+    },
+    "algo": {
+      "kicker": "Algorithme",
+      "title": "Attribution automatique des groupes AD"
+    },
+    "spaces": {
+      "kicker": "Ce que FormRH remplace",
+      "title": "5 tâches manuelles devenues automatiques",
+      "s1": {
+        "title": "Emails de notification",
+        "desc": "À chaque étape du workflow, le bon email part automatiquement — plus besoin de penser à prévenir le manager ou le SI"
+      },
+      "s2": {
+        "title": "Rappels journaliers",
+        "desc": "Si le manager n'a pas complété le formulaire, il reçoit un rappel email chaque jour (cron) jusqu'à validation"
+      },
+      "s3": {
+        "title": "Création AD en 1 clic",
+        "desc": "Le worker crée le compte dans la bonne OU LDAP, attribue les groupes AD selon les règles emploi/service, et génère le fichier identifiants"
+      },
+      "s4": {
+        "title": "Compte N2F",
+        "desc": "Création automatique via l'API N2F avec normalisation du nom et récupération du manager depuis Azure AD"
+      },
+      "s5": {
+        "title": "Config sans redéploiement",
+        "desc": "8 onglets admin dans MongoDB : nouvelles règles AD, nouveaux services, nouvelles villes — sans toucher au code"
+      }
+    },
+    "cta": {
+      "allProjects": "Tous les projets"
+    }
+  },
+  "Projects": {
+    "breadcrumb": { "home": "Accueil", "current": "Projets" },
+    "hero": {
+      "kicker": "Projets",
+      "title": "Études de cas",
+      "subtitle": "Une sélection de projets menés en autonomie complète — de l'architecture jusqu'à la production."
+    },
+    "final": {
+      "text": "D'autres projets sont en cours d'écriture. N'hésitez pas à me contacter pour en discuter.",
+      "cta": "Me contacter"
+    }
+  },
+  "Contact": {
+    "breadcrumb": { "home": "Accueil", "current": "Contact" },
+    "hero": {
+      "kicker": "Contact",
+      "title": "Échangeons",
+      "subtitle": "Le plus simple est de me joindre directement par mail ou via LinkedIn. Je réponds sous 24–48h."
+    },
+    "cards": {
+      "email":    { "label": "Email",    "value": "contact@jordan-jimenez.dev" },
+      "linkedin": { "label": "LinkedIn", "value": "@jordan-jimenez" },
+      "github":   { "label": "GitHub",   "value": "@jimenezjordan" }
+    },
+    "disponibilite": {
+      "badge": "Disponible",
+      "text": "Ouvert aux opportunités — alternance, freelance ou CDI selon le projet."
+    }
+  },
+  "Parcours": {
+    "breadcrumb": { "home": "Accueil", "current": "Parcours" },
+    "hero": {
+      "kicker": "Parcours",
+      "title": "Quatre ans à industrialiser des outils internes",
+      "bio": "Développeur full-stack en alternance chez Groupe ESLC depuis 2022, avec une activité freelance en parallèle. Je conçois et livre des outils métier robustes en autonomie complète — de l'architecture à la mise en production.",
+      "downloadCv": "Télécharger mon CV"
+    },
+    "experiences": {
+      "kicker": "Expériences",
+      "title": "Parcours professionnel",
+      "typeAlternance": "Alternance",
+      "typeFreelance": "Freelance",
+      "typeStage": "Stage",
+      "inProgress": "En cours",
+      "clientsLabel": "Clients",
+      "eslc": {
+        "dates": "Sept. 2022 → aujourd'hui",
+        "location": "Vénissieux · Sur site",
+        "title": "Fullstack & DevOps Developer",
+        "company": "Groupe ESLC",
+        "b1": "Conception et mise en production d'outils internes (SIRH, dashboards data, automatisation API)",
+        "b2": "Utilisés quotidiennement par les équipes opérationnelles",
+        "b3": "Optimisation des processus métiers et réduction des tâches manuelles",
+        "b4": "Contribution à l'industrialisation des déploiements (approche DevOps)"
+      },
+      "freelance": {
+        "dates": "Août 2022 → aujourd'hui",
+        "location": "France · À distance",
+        "title": "Développeur Web",
+        "company": "Indépendant",
+        "b1": "Développement de sites internet pour clients",
+        "b2": "Stack : HTML, CSS, JavaScript, React",
+        "b3": "Intégrations e-commerce et paiement (Stripe)",
+        "b4": "Hébergement cloud (AWS)",
+        "b5": "Système de prise de rendez-vous (Planity)",
+        "b6": "Gestion projet de A à Z : cahier des charges, livraison, maintenance"
+      },
+      "oxxodata": {
+        "dates": "Janv. 2022 → Mars 2022",
+        "location": "Lyon · Stage de 3 mois",
+        "title": "Technicien informatique",
+        "company": "OXXODATA",
+        "b1": "Architecture serveur et réseaux informatiques"
+      },
+      "fmi": {
+        "dates": "Janv. 2021 → Mars 2021",
+        "location": "Lyon · Stage de 3 mois",
+        "title": "Technicien informatique",
+        "company": "FMI Groupe",
+        "b1": "Architecture serveur et réseaux informatiques"
+      }
+    },
+    "formations": {
+      "kicker": "Formations",
+      "title": "Parcours scolaire",
+      "diplomeBadge": "Diplômé",
+      "bachelor": {
+        "dates": "2022 → 2025",
+        "duration": "3 ans",
+        "location": "Lyon 07",
+        "diploma": "Bachelor Responsable de Projet Informatique",
+        "school": "Isitech",
+        "b1": "Développement web full-stack",
+        "b2": "Backend en Node.js et C# .NET 8",
+        "b3": "Workflows avec Git, CI/CD et Docker",
+        "b4": "Méthodes Agile et Scrum"
+      },
+      "bacpro": {
+        "dates": "2019 → 2022",
+        "location": "Lyon 08",
+        "diploma": "Bac Pro Système Numérique",
+        "school": "Lycée La Mâche"
+      },
+      "brevet": {
+        "dates": "2016 → 2019",
+        "location": "Mions",
+        "diploma": "Diplôme du Brevet",
+        "school": "Collège MLK"
+      }
+    },
+    "skills": {
+      "kicker": "Compétences",
+      "title": "Stack technique",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "devops": "DevOps & infra",
+      "languages": "Langages additionnels"
+    },
+    "langues": {
+      "kicker": "Langues",
+      "title": "Langues parlées",
+      "fr": { "name": "Français", "level": "Langue maternelle" },
+      "en": { "name": "Anglais", "level": "Niveau professionnel (B1)" },
+      "es": { "name": "Espagnol", "level": "Niveau A1" }
+    },
+    "atouts": {
+      "kicker": "Approche",
+      "title": "Ce qui me différencie",
+      "autonomie":     { "title": "Autonomie de bout en bout",       "desc": "De l'architecture à la mise en production, je prends en charge un projet seul, sans avoir besoin d'être encadré sur chaque décision." },
+      "reactivite":    { "title": "Réactivité & prise d'initiatives", "desc": "J'identifie les besoins avant qu'ils ne deviennent urgents et je propose des solutions plutôt que d'attendre les instructions." },
+      "reflexion":     { "title": "Réflexion & décisions défendables","desc": "Pas de tech pour la tech : chaque choix technique se justifie par un besoin concret (perfs, simplicité, fiabilité)." },
+      "communication": { "title": "Communication avec les non-techs", "desc": "RH, managers, équipes opérationnelles — je traduis le technique en concret et je documente chaque livraison." },
+      "equipe":        { "title": "Travail d'équipe & priorisation",  "desc": "Organisation rigoureuse, gestion des dépendances, capacité à arbitrer ce qui est important vs urgent." },
+      "stress":        { "title": "Résistance au stress",             "desc": "Production en panne, bug critique, fenêtre d'intervention courte — je garde la tête froide et j'avance méthodiquement." }
+    },
+    "cta": {
+      "text": "Une opportunité à partager ?",
+      "link": "Discutons-en"
     }
   }
 }
