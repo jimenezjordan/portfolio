@@ -443,5 +443,31 @@
       "text": "Une opportunité à partager ?",
       "link": "Discutons-en"
     }
+  },
+  "Metadata": {
+    "home": {
+      "title": "Jordan Jimenez — Développeur Fullstack & DevOps",
+      "description": "Développeur full-stack en alternance chez Groupe ESLC depuis 2022. SIRH, dashboards data, automatisations API. Disponible pour de nouvelles opportunités."
+    },
+    "projets": {
+      "title": "Projets",
+      "description": "Études de cas de projets livrés en autonomie complète — de l'architecture à la production."
+    },
+    "formrh": {
+      "title": "FormRH — SIRH automatisé",
+      "description": "3 échanges d'emails → 1 formulaire. Provisioning AD automatique avec les bons groupes, rappels daily, création N2F. Étude de cas technique."
+    },
+    "degresJours": {
+      "title": "Degrés Jours — Collecte météo automatisée",
+      "description": "Pipeline Météo France : Chokidar ingère les fichiers .data en < 10s, DJU calculés automatiquement, 4 vues métier. Étude de cas."
+    },
+    "parcours": {
+      "title": "Parcours",
+      "description": "4 ans de développement en alternance chez Groupe ESLC et freelance. Timeline d'expériences, formations, stack technique et compétences."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Prendre contact avec Jordan Jimenez, développeur full-stack & DevOps disponible pour alternance, freelance ou CDI selon le projet."
+    }
   }
 }

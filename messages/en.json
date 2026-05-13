@@ -443,5 +443,31 @@
       "text": "An opportunity to share?",
       "link": "Let's talk"
     }
+  },
+  "Metadata": {
+    "home": {
+      "title": "Jordan Jimenez — Fullstack & DevOps Developer",
+      "description": "Full-stack developer in work-study at Groupe ESLC since 2022. HRMS, data dashboards, API automation. Available for new opportunities."
+    },
+    "projets": {
+      "title": "Projects",
+      "description": "Case studies of projects delivered with full ownership — from architecture to production."
+    },
+    "formrh": {
+      "title": "FormRH — Automated HRMS",
+      "description": "3 email exchanges → 1 form. Automatic AD provisioning with the right groups, daily reminders, N2F account creation. Technical case study."
+    },
+    "degresJours": {
+      "title": "Degrés Jours — Automated Weather Collection",
+      "description": "Météo France pipeline: Chokidar ingests .data files in < 10s, DJU calculated automatically, 4 business views. Case study."
+    },
+    "parcours": {
+      "title": "Background",
+      "description": "4 years of development in work-study at Groupe ESLC and freelance. Experience timeline, education, tech stack and skills."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Get in touch with Jordan Jimenez, full-stack & DevOps developer available for work-study, freelance or permanent position."
+    }
   }
 }
