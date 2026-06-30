@@ -27,7 +27,7 @@ export default function WorkflowRoles() {
   return (
     <div className="relative">
       {/* Vertical connector line */}
-      <div className="absolute left-[15px] top-8 bottom-8 w-px bg-neutral-200 md:left-[19px]" />
+      <div className="absolute left-[15px] top-8 bottom-8 w-px bg-neutral-200 dark:bg-neutral-700 md:left-[19px]" />
 
       <ol className="space-y-0">
         {STEPS.map(({ key, role, autoKeys }, i) => {
@@ -46,25 +46,25 @@ export default function WorkflowRoles() {
               </div>
 
               {/* Content card */}
-              <div className={`mb-4 flex-1 rounded-xl border border-neutral-100 bg-white p-5 ${isLast ? '' : ''}`}>
+              <div className={`mb-4 flex-1 rounded-xl border border-neutral-100 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900 ${isLast ? '' : ''}`}>
                 {/* Header */}
                 <div className="mb-3 flex flex-wrap items-center gap-2">
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${s.badge}`}>
                     {t(`${key}.role`)}
                   </span>
-                  <h3 className="text-sm font-bold text-neutral-900">
+                  <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-50">
                     {t(`${key}.title`)}
                   </h3>
                 </div>
 
                 {/* Human action */}
-                <p className="text-sm text-neutral-600 leading-relaxed">
+                <p className="text-sm text-neutral-600 leading-relaxed dark:text-neutral-400">
                   {t(`${key}.action`)}
                 </p>
 
                 {/* Automatic triggers */}
                 {autoKeys.length > 0 && (
-                  <ul className="mt-3 space-y-1.5 border-t border-neutral-100 pt-3">
+                  <ul className="mt-3 space-y-1.5 border-t border-neutral-100 pt-3 dark:border-neutral-800">
                     {autoKeys.map((ak) => (
                       <li key={ak} className="flex items-start gap-2 text-xs text-emerald-700">
                         <span className="mt-0.5 shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 font-bold uppercase tracking-wide text-emerald-600" style={{ fontSize: '9px' }}>

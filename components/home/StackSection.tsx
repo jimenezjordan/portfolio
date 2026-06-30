@@ -26,13 +26,13 @@ export default function StackSection() {
   const t = useTranslations('Home.stack');
 
   return (
-    <section className="border-t border-neutral-200/70 bg-white">
+    <section className="border-t border-neutral-200/70 bg-white dark:border-neutral-800/70 dark:bg-neutral-950">
       <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
         <RevealOnScroll>
-          <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
             {t('kicker')}
           </span>
-          <h2 className="mt-3 max-w-2xl text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+          <h2 className="mt-3 max-w-2xl text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-3xl">
             {t('title')}
           </h2>
         </RevealOnScroll>
@@ -40,12 +40,12 @@ export default function StackSection() {
         <div className="mt-12 grid gap-8 md:grid-cols-2">
           {stackCategories.map((cat, i) => (
             <RevealOnScroll key={cat.key} delay={0.05 + i * 0.05}>
-              <div className="rounded-2xl border border-neutral-100 bg-neutral-50 p-5">
+              <div className="rounded-2xl border border-neutral-100 bg-neutral-50 p-5 dark:border-neutral-800 dark:bg-neutral-900">
                 <div className="mb-4 flex items-center gap-3">
-                  <span className="font-mono text-xs font-bold text-neutral-300">
+                  <span className="font-mono text-xs font-bold text-neutral-300 dark:text-neutral-600">
                     {NUMBERS[i]}
                   </span>
-                  <h3 className="text-sm font-bold uppercase tracking-wide text-neutral-700">
+                  <h3 className="text-sm font-bold uppercase tracking-wide text-neutral-700 dark:text-neutral-300">
                     {t(cat.key)}
                   </h3>
                 </div>
@@ -53,7 +53,7 @@ export default function StackSection() {
                   {cat.items.map((item) => (
                     <span
                       key={item}
-                      className="rounded-lg border border-neutral-200 bg-white px-3 py-1.5 font-mono text-xs font-medium text-neutral-700 shadow-sm"
+                      className="rounded-lg border border-neutral-200 bg-white px-3 py-1.5 font-mono text-xs font-medium text-neutral-700 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
                     >
                       {item}
                     </span>

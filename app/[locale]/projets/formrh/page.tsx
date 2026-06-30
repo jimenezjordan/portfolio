@@ -61,15 +61,15 @@ export default function FormRHPage() {
       />
 
       {/* Contexte — blanc */}
-      <section className="border-t border-neutral-200/70 bg-white">
+      <section className="border-t border-neutral-200/70 bg-white dark:border-neutral-800/70 dark:bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
             <div className="grid gap-12 md:grid-cols-12">
               <div className="md:col-span-4">
-                <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                   {t('context.kicker')}
                 </span>
-                <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+                <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-3xl">
                   {t('context.title')}
                 </h2>
               </div>
@@ -83,7 +83,7 @@ export default function FormRHPage() {
       </section>
 
       {/* Rôles — fond neutre clair */}
-      <section className="border-t border-neutral-100 bg-neutral-50">
+      <section className="border-t border-neutral-100 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
             <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
@@ -134,7 +134,7 @@ export default function FormRHPage() {
       </section>
 
       {/* Décisions techniques — blanc */}
-      <section className="border-t border-neutral-200/70 bg-white">
+      <section className="border-t border-neutral-200/70 bg-white dark:border-neutral-800/70 dark:bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <div className="grid gap-10 md:grid-cols-3">
             <RevealOnScroll>
@@ -166,7 +166,7 @@ export default function FormRHPage() {
       </section>
 
       {/* Algorithme — fond neutre */}
-      <section className="border-t border-neutral-200 bg-neutral-50">
+      <section className="border-t border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
             <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
@@ -183,7 +183,7 @@ export default function FormRHPage() {
       </section>
 
       {/* Espaces fonctionnels — teinte violet légère */}
-      <section className="border-t border-violet-100 bg-violet-50">
+      <section className="border-t border-violet-100 bg-violet-50 dark:border-violet-900/30 dark:bg-violet-950/20">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
             <span className="text-xs font-semibold uppercase tracking-wider text-violet-600">

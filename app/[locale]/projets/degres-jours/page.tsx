@@ -60,15 +60,15 @@ export default function DegresJoursPage() {
       />
 
       {/* Contexte — blanc */}
-      <section className="border-t border-neutral-200/70 bg-white">
+      <section className="border-t border-neutral-200/70 bg-white dark:border-neutral-800/70 dark:bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
             <div className="grid gap-12 md:grid-cols-12">
               <div className="md:col-span-4">
-                <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                   {t('context.kicker')}
                 </span>
-                <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+                <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-3xl">
                   {t('context.title')}
                 </h2>
               </div>
@@ -119,7 +119,7 @@ export default function DegresJoursPage() {
       </section>
 
       {/* Décision technique — blanc avec accents */}
-      <section className="border-t border-neutral-200/70 bg-white">
+      <section className="border-t border-neutral-200/70 bg-white dark:border-neutral-800/70 dark:bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
             <DecisionCallout
@@ -133,7 +133,7 @@ export default function DegresJoursPage() {
       </section>
 
       {/* Pages de l'application — fond sky très léger */}
-      <section className="border-t border-sky-100 bg-sky-50">
+      <section className="border-t border-sky-100 bg-sky-50 dark:border-sky-900/30 dark:bg-sky-950/20">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
             <span className="text-xs font-semibold uppercase tracking-wider text-sky-600">
@@ -150,7 +150,7 @@ export default function DegresJoursPage() {
       </section>
 
       {/* Stations — couverture géographique */}
-      <section className="border-t border-sky-100 bg-white">
+      <section className="border-t border-sky-100 bg-white dark:border-sky-900/30 dark:bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-20 md:py-28">
           <RevealOnScroll>
             <span className="text-xs font-semibold uppercase tracking-wider text-sky-600">

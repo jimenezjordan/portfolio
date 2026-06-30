@@ -10,7 +10,7 @@ export default function Hero() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section className="relative overflow-hidden bg-white dark:bg-neutral-950">
       {/* Dot grid */}
       <div
         className="absolute inset-0 opacity-40"
@@ -42,7 +42,7 @@ export default function Hero() {
           initial={reducedMotion ? {} : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-4xl text-5xl font-bold tracking-tight text-neutral-900 md:text-7xl md:leading-[1.05]"
+          className="max-w-4xl text-5xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-7xl md:leading-[1.05]"
         >
           {t('title')}
         </motion.h1>
@@ -51,7 +51,7 @@ export default function Hero() {
           initial={reducedMotion ? {} : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-7 max-w-lg text-lg leading-relaxed text-neutral-500"
+          className="mt-7 max-w-lg text-lg leading-relaxed text-neutral-500 dark:text-neutral-400"
         >
           {t('subtitle')}
         </motion.p>
@@ -71,7 +71,7 @@ export default function Hero() {
           </Link>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-sm font-semibold text-neutral-700 shadow-sm transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
           >
             <Mail size={15} />
             {t('ctaSecondary')}
@@ -83,7 +83,7 @@ export default function Hero() {
           initial={reducedMotion ? {} : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="mt-20 flex items-center gap-8 border-t border-neutral-200/60 pt-8 text-xs text-neutral-400"
+          className="mt-20 flex items-center gap-8 border-t border-neutral-200/60 pt-8 text-xs text-neutral-400 dark:border-neutral-800/60 dark:text-neutral-500"
         >
           <span>3+ ans en alternance</span>
           <span className="h-px w-4 bg-neutral-300" />

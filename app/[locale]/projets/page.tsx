@@ -37,32 +37,32 @@ export default function ProjetsPage() {
   return (
     <>
       {/* Hero */}
-      <section className="border-b border-neutral-200/70 bg-white">
+      <section className="border-b border-neutral-200/70 bg-white dark:border-neutral-800/70 dark:bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-14 md:py-20">
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center gap-2 text-sm text-neutral-400">
+            <ol className="flex items-center gap-2 text-sm text-neutral-400 dark:text-neutral-500">
               <li>
-                <Link href="/" className="transition-colors hover:text-neutral-700">
+                <Link href="/" className="transition-colors hover:text-neutral-700 dark:hover:text-neutral-300">
                   {t('breadcrumb.home')}
                 </Link>
               </li>
               <li aria-hidden="true">›</li>
-              <li className="font-medium text-neutral-700">{t('breadcrumb.current')}</li>
+              <li className="font-medium text-neutral-700 dark:text-neutral-300">{t('breadcrumb.current')}</li>
             </ol>
           </nav>
 
-          <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
             {t('hero.kicker')}
           </span>
-          <h1 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-neutral-900 md:text-5xl">
+          <h1 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-5xl">
             {t('hero.title')}
           </h1>
-          <p className="mt-4 max-w-2xl text-neutral-500">{t('hero.subtitle')}</p>
+          <p className="mt-4 max-w-2xl text-neutral-500 dark:text-neutral-400">{t('hero.subtitle')}</p>
         </div>
       </section>
 
       {/* Grid de projets */}
-      <section className="bg-neutral-50">
+      <section className="bg-neutral-50 dark:bg-neutral-900">
         <div className="mx-auto max-w-5xl px-6 py-16 md:py-20">
           <div className="grid gap-6 md:grid-cols-2">
             {projects.map((project, i) => (
@@ -75,13 +75,13 @@ export default function ProjetsPage() {
       </section>
 
       {/* Section finale */}
-      <section className="border-t border-neutral-200/70 bg-white">
+      <section className="border-t border-neutral-200/70 bg-white dark:border-neutral-800/70 dark:bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-14 md:py-20">
           <RevealOnScroll>
-            <p className="text-neutral-500">{t('final.text')}</p>
+            <p className="text-neutral-500 dark:text-neutral-400">{t('final.text')}</p>
             <Link
               href="/contact"
-              className="group mt-4 inline-flex items-center gap-2 text-sm font-semibold text-neutral-900 transition hover:text-neutral-600"
+              className="group mt-4 inline-flex items-center gap-2 text-sm font-semibold text-neutral-900 transition hover:text-neutral-600 dark:text-neutral-50 dark:hover:text-neutral-300"
             >
               {t('final.cta')}
               <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />

@@ -17,17 +17,17 @@ export default function StationGrid() {
         {stations.map((s) => (
           <div
             key={`${s.site}-${s.stationId}`}
-            className="group rounded-xl border border-sky-100 bg-white p-4 transition hover:border-sky-200 hover:shadow-sm"
+            className="group rounded-xl border border-sky-100 bg-white p-4 transition hover:border-sky-200 hover:shadow-sm dark:border-sky-900/30 dark:bg-neutral-900 dark:hover:border-sky-800/50"
           >
-            <p className="text-sm font-bold text-neutral-900">{s.site}</p>
-            <p className="mt-1 font-mono text-xs text-neutral-500">{s.stationName}</p>
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-50">{s.site}</p>
+            <p className="mt-1 font-mono text-xs text-neutral-500 dark:text-neutral-400">{s.stationName}</p>
             <p className={`mt-1.5 font-mono text-xs font-semibold ${distanceColor(s.distance)}`}>
               {s.distance}
             </p>
           </div>
         ))}
       </div>
-      <div className="mt-5 flex items-center gap-6 text-xs text-neutral-400">
+      <div className="mt-5 flex items-center gap-6 text-xs text-neutral-400 dark:text-neutral-500">
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-full bg-emerald-500" /> ≤ 1 km
         </span>

@@ -14,7 +14,7 @@ export default function TimelineExperience() {
   return (
     <div className="relative">
       {/* Vertical line — desktop: centre, mobile: left */}
-      <div className="absolute left-4 top-0 bottom-0 w-px bg-neutral-200 md:left-1/2 md:-translate-x-px" />
+      <div className="absolute left-4 top-0 bottom-0 w-px bg-neutral-200 dark:bg-neutral-700 md:left-1/2 md:-translate-x-px" />
 
       <ol className="space-y-10">
         {EXPERIENCES.map((exp, i) => {
@@ -42,11 +42,11 @@ export default function TimelineExperience() {
                 <div className={`hidden md:flex md:items-start md:pt-5 ${isRight ? 'md:justify-end md:pr-10' : 'md:justify-start md:pl-10'}`}>
                   <RevealOnScroll delay={i * 0.1}>
                     <div className="text-right">
-                      <span className="text-sm font-medium text-neutral-500">
+                      <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
                         {t(`${exp.key}.dates` as Parameters<typeof t>[0])}
                       </span>
                       <br />
-                      <span className="text-xs text-neutral-400">
+                      <span className="text-xs text-neutral-400 dark:text-neutral-500">
                         {t(`${exp.key}.location` as Parameters<typeof t>[0])}
                       </span>
                     </div>
@@ -56,7 +56,7 @@ export default function TimelineExperience() {
                 {/* Card */}
                 <div className={`${isRight ? 'md:pl-10' : 'md:pr-10'}`}>
                   <RevealOnScroll delay={i * 0.1}>
-                    <div className="rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm">
+                    <div className="rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                       {/* Header */}
                       <div className="mb-4 flex flex-wrap items-center gap-2">
                         <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${typeBadge}`}>
@@ -68,25 +68,25 @@ export default function TimelineExperience() {
                           </span>
                         )}
                         {/* Dates visible on mobile only */}
-                        <span className="ml-auto text-xs text-neutral-400 md:hidden">
+                        <span className="ml-auto text-xs text-neutral-400 dark:text-neutral-500 md:hidden">
                           {t(`${exp.key}.dates` as Parameters<typeof t>[0])}
                         </span>
                       </div>
 
-                      <p className="text-xs text-neutral-400 md:hidden">
+                      <p className="text-xs text-neutral-400 dark:text-neutral-500 md:hidden">
                         {t(`${exp.key}.location` as Parameters<typeof t>[0])}
                       </p>
 
-                      <h3 className="mt-2 font-semibold text-neutral-900">
+                      <h3 className="mt-2 font-semibold text-neutral-900 dark:text-neutral-50">
                         {t(`${exp.key}.title` as Parameters<typeof t>[0])}
                       </h3>
-                      <p className="text-sm font-bold text-neutral-700">
+                      <p className="text-sm font-bold text-neutral-700 dark:text-neutral-300">
                         {t(`${exp.key}.company` as Parameters<typeof t>[0])}
                       </p>
 
                       <ul className="mt-3 space-y-1.5">
                         {exp.bulletKeys.map((bk) => (
-                          <li key={bk} className="flex items-start gap-2 text-sm text-neutral-600">
+                          <li key={bk} className="flex items-start gap-2 text-sm text-neutral-600 dark:text-neutral-400">
                             <span className="mt-1.5 h-1 w-1 flex-none rounded-full bg-neutral-400" />
                             {t(`${exp.key}.${bk}` as Parameters<typeof t>[0])}
                           </li>
@@ -94,7 +94,7 @@ export default function TimelineExperience() {
                       </ul>
 
                       {'hasClients' in exp && exp.hasClients && (
-                        <p className="mt-4 border-t border-neutral-100 pt-3 text-xs text-neutral-500">
+                        <p className="mt-4 border-t border-neutral-100 pt-3 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
                           <span className="font-medium">{t('clientsLabel')} : </span>
                           {FREELANCE_CLIENTS.join(' · ')}
                         </p>

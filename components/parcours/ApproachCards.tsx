@@ -17,12 +17,12 @@ export default function ApproachCards() {
         const Icon = ICON_MAP[icon];
         return (
           <RevealOnScroll key={key} delay={0.05 + i * 0.06}>
-            <div className="rounded-2xl border border-neutral-100 bg-white p-6">
-              <Icon size={28} className="mb-4 text-neutral-700" />
-              <p className="font-medium text-neutral-900">
+            <div className="rounded-2xl border border-neutral-100 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
+              <Icon size={28} className="mb-4 text-neutral-700 dark:text-neutral-300" />
+              <p className="font-medium text-neutral-900 dark:text-neutral-50">
                 {t(`${key}.title` as Parameters<typeof t>[0])}
               </p>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-600">
+              <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                 {t(`${key}.desc` as Parameters<typeof t>[0])}
               </p>
             </div>

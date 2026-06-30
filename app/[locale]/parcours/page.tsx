@@ -42,33 +42,33 @@ export default function ParcoursPage() {
   return (
     <>
       {/* Hero */}
-      <section className="border-b border-neutral-200/70 bg-white">
+      <section className="border-b border-neutral-200/70 bg-white dark:border-neutral-800/70 dark:bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-14 md:py-20">
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center gap-2 text-sm text-neutral-400">
+            <ol className="flex items-center gap-2 text-sm text-neutral-400 dark:text-neutral-500">
               <li>
-                <Link href="/" className="transition-colors hover:text-neutral-700">
+                <Link href="/" className="transition-colors hover:text-neutral-700 dark:hover:text-neutral-300">
                   {t('breadcrumb.home')}
                 </Link>
               </li>
               <li aria-hidden="true">›</li>
-              <li className="font-medium text-neutral-700">{t('breadcrumb.current')}</li>
+              <li className="font-medium text-neutral-700 dark:text-neutral-300">{t('breadcrumb.current')}</li>
             </ol>
           </nav>
 
           <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
             {t('hero.kicker')}
           </span>
-          <h1 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-neutral-900 md:text-5xl">
+          <h1 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-5xl">
             {t('hero.title')}
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-neutral-500">
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-neutral-500 dark:text-neutral-400">
             {t('hero.bio')}
           </p>
           <a
             href="/cv-jordan-jimenez.pdf"
             download
-            className="mt-7 inline-flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-5 py-2.5 text-sm font-semibold text-neutral-700 shadow-sm transition hover:border-neutral-300 hover:bg-neutral-50"
+            className="mt-7 inline-flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-5 py-2.5 text-sm font-semibold text-neutral-700 shadow-sm transition hover:border-neutral-300 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 dark:focus-visible:ring-neutral-100"
           >
             <Download size={15} />
             {t('hero.downloadCv')}
@@ -77,13 +77,13 @@ export default function ParcoursPage() {
       </section>
 
       {/* Expériences */}
-      <section className="border-t border-neutral-200/70 bg-neutral-50">
+      <section className="border-t border-neutral-200/70 bg-neutral-50 dark:border-neutral-800/70 dark:bg-neutral-900">
         <div className="mx-auto max-w-5xl px-6 py-16 md:py-24">
           <RevealOnScroll>
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
               {t('experiences.kicker')}
             </span>
-            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-3xl">
               {t('experiences.title')}
             </h2>
           </RevealOnScroll>
@@ -94,13 +94,13 @@ export default function ParcoursPage() {
       </section>
 
       {/* Formations */}
-      <section className="border-t border-neutral-200/70 bg-white">
+      <section className="border-t border-neutral-200/70 bg-white dark:border-neutral-800/70 dark:bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-16 md:py-24">
           <RevealOnScroll>
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
               {t('formations.kicker')}
             </span>
-            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-3xl">
               {t('formations.title')}
             </h2>
           </RevealOnScroll>
@@ -111,25 +111,25 @@ export default function ParcoursPage() {
       </section>
 
       {/* Compétences — pattern StackSection */}
-      <section className="border-t border-neutral-200/70 bg-neutral-50">
+      <section className="border-t border-neutral-200/70 bg-neutral-50 dark:border-neutral-800/70 dark:bg-neutral-900">
         <div className="mx-auto max-w-5xl px-6 py-16 md:py-24">
           <RevealOnScroll>
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
               {t('skills.kicker')}
             </span>
-            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-3xl">
               {t('skills.title')}
             </h2>
           </RevealOnScroll>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             {SKILLS.map((cat, i) => (
               <RevealOnScroll key={cat.key} delay={0.05 + i * 0.05}>
-                <div className="rounded-2xl border border-neutral-100 bg-white p-5">
+                <div className="rounded-2xl border border-neutral-100 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
                   <div className="mb-4 flex items-center gap-3">
-                    <span className="font-mono text-xs font-bold text-neutral-300">
+                    <span className="font-mono text-xs font-bold text-neutral-300 dark:text-neutral-600">
                       {SKILL_NUMBERS[i]}
                     </span>
-                    <h3 className="text-sm font-bold uppercase tracking-wide text-neutral-700">
+                    <h3 className="text-sm font-bold uppercase tracking-wide text-neutral-700 dark:text-neutral-300">
                       {t(`skills.${cat.key}` as Parameters<typeof t>[0])}
                     </h3>
                   </div>
@@ -137,7 +137,7 @@ export default function ParcoursPage() {
                     {cat.items.map((item) => (
                       <span
                         key={item}
-                        className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-1.5 font-mono text-xs font-medium text-neutral-700 shadow-sm"
+                        className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-1.5 font-mono text-xs font-medium text-neutral-700 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
                       >
                         {item}
                       </span>
@@ -151,13 +151,13 @@ export default function ParcoursPage() {
       </section>
 
       {/* Langues */}
-      <section className="border-t border-neutral-200/70 bg-white">
+      <section className="border-t border-neutral-200/70 bg-white dark:border-neutral-800/70 dark:bg-neutral-950">
         <div className="mx-auto max-w-5xl px-6 py-16 md:py-24">
           <RevealOnScroll>
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
               {t('langues.kicker')}
             </span>
-            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-3xl">
               {t('langues.title')}
             </h2>
           </RevealOnScroll>
@@ -168,13 +168,13 @@ export default function ParcoursPage() {
       </section>
 
       {/* Atouts */}
-      <section className="border-t border-neutral-200/70 bg-neutral-50">
+      <section className="border-t border-neutral-200/70 bg-neutral-50 dark:border-neutral-800/70 dark:bg-neutral-900">
         <div className="mx-auto max-w-5xl px-6 py-16 md:py-24">
           <RevealOnScroll>
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
               {t('atouts.kicker')}
             </span>
-            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 md:text-3xl">
               {t('atouts.title')}
             </h2>
           </RevealOnScroll>

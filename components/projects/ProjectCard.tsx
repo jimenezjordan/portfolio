@@ -29,7 +29,7 @@ export default function ProjectCard({ project }: { project: Project }) {
       <motion.article
         whileHover={{ y: -6 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="relative overflow-hidden rounded-2xl bg-white shadow-md transition-shadow duration-300 group-hover:shadow-xl"
+        className="relative overflow-hidden rounded-2xl bg-white shadow-md transition-shadow duration-300 group-hover:shadow-xl dark:bg-neutral-900"
       >
         {/* Image placeholder */}
         <div className="relative aspect-[16/10] overflow-hidden">
@@ -59,17 +59,17 @@ export default function ProjectCard({ project }: { project: Project }) {
 
         {/* Content */}
         <div className="p-6">
-          <div className="mb-3 flex items-center gap-3 text-xs text-neutral-400">
+          <div className="mb-3 flex items-center gap-3 text-xs text-neutral-400 dark:text-neutral-500">
             <span>{project.year}</span>
             <span className="h-1 w-1 rounded-full bg-neutral-300" />
             <span>{project.role}</span>
           </div>
 
-          <h3 className="text-xl font-bold tracking-tight text-neutral-900">
+          <h3 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
             {t(project.titleKey)}
           </h3>
 
-          <p className="mt-2.5 text-sm leading-relaxed text-neutral-500">
+          <p className="mt-2.5 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
             {t(project.summaryKey)}
           </p>
 
@@ -77,7 +77,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1 font-mono text-[11px] font-medium text-neutral-600"
+                className="rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1 font-mono text-[11px] font-medium text-neutral-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400"
               >
                 {tag}
               </span>
