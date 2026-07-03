@@ -15,18 +15,6 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://jordan-jimenez.dev';
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Jordan Jimenez',
-  jobTitle: 'Fullstack & DevOps Developer',
-  url: BASE,
-  sameAs: [
-    'https://github.com/jimenezjordan',
-    'https://www.linkedin.com/in/jordan-jimenez-a8423a224/',
-  ],
-};
-
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -66,12 +54,6 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={inter.variable} suppressHydrationWarning>
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
       <body className="bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-50">
         <ThemeProvider>
         <NextIntlClientProvider>
