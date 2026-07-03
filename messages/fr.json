@@ -50,31 +50,46 @@
     },
     "hero": {
       "title": "Degrés Jours — Collecte météo automatisée",
-      "pitch": "Avant : fichiers Excel envoyés par email, saisie manuelle, plusieurs versions en circulation. Après : un fichier .data déposé sur le serveur suffit — Chokidar le détecte, l'ingère en moins de 10 secondes, et les DJU sont calculés automatiquement.",
-      "stat1Value": "20",
-      "stat1Label": "Stations Météo France",
+      "pitch": "ESLC gère le chauffage de 20 sites avec des contrats fioul dont la facturation dépend des DJU mensuels. J'ai remplacé plusieurs heures de saisie manuelle par mois par un pipeline entièrement automatisé : un script C# collecte les données MétéoFrance chaque jour à 13h30, les injecte en moins de 10 secondes dans MongoDB, et les DJU sont calculés et disponibles en temps réel pour tous les sites.",
+      "stat1Value": "~3h",
+      "stat1Label": "Économisées / mois",
       "stat2Value": "< 10s",
-      "stat2Label": "Ingestion auto",
-      "stat3Value": "4",
-      "stat3Label": "Vues métier",
-      "stat4Value": "Solo",
-      "stat4Label": "Rôle"
+      "stat2Label": "Fichier → portail",
+      "stat3Value": "0",
+      "stat3Label": "Erreur de saisie",
+      "stat4Value": "4 ans",
+      "stat4Label": "En production"
     },
     "context": {
       "kicker": "Le problème",
-      "title": "Des fichiers Excel partagés par email, des versions multiples, des erreurs de saisie",
-      "p1": "Avant MeteoESLC, le calcul des DJU et le suivi des températures étaient entièrement manuels : copier-coller les données Météo France vers Excel, envoyer le fichier par email à chaque interlocuteur, gérer les versions multiples (v1, v2, v2_final…), corriger les erreurs de saisie après diffusion. Ce processus récurrent représentait plusieurs heures par mois — avec une dépendance à une seule personne connaissant le fichier.",
-      "p2": "MeteoESLC remplace tout ce processus par une source de vérité unique. Dès qu'un fichier .data Météo France est déposé dans le dossier surveillé, Chokidar le détecte (polling toutes les 5s) et l'ingère dans MongoDB Atlas en moins de 10 secondes — sans doublon grâce à l'index unique (poste, date). Les 4 vues métier sont instantanément à jour pour tous les utilisateurs, depuis n'importe quel poste."
+      "title": "Plusieurs heures par mois, une seule personne, zéro automatisation",
+      "p1": "ESLC suit le chauffage de 20 sites via des contrats fioul dont la facturation dépend des Degrés-Jours Unifiés mensuels. Avant MeteoESLC, ce calcul était entièrement manuel : télécharger les relevés MétéoFrance, les copier dans Excel, calculer les DJU colonne par colonne, envoyer le fichier par email à chaque interlocuteur, gérer les versions concurrentes (v1, v2, v2_final…). Ce processus récurrent représentait plusieurs heures chaque mois — et reposait sur une seule personne qui connaissait le fichier.",
+      "p2": "La conséquence concrète : un retard ou une erreur dans les DJU mensuels pouvait fausser la facturation fioul de l'ensemble des sites. Le budget chauffage de l'entreprise dépendait d'un classeur Excel fragile, maintenu à la main, sans traçabilité ni centralisation."
+    },
+    "dju": {
+      "kicker": "Comment ça fonctionne",
+      "title": "Du thermomètre au contrat énergétique en moins de 10 secondes",
+      "explainerTitle": "Qu'est-ce qu'un DJU ?",
+      "explainerBody": "Un Degré-Jour Unifié (DJU) mesure à quel point une journée est froide : max(0, 18 − (TN + TX) / 2). Quand la température moyenne descend sous 18 °C, les bâtiments ont besoin de chauffage — chaque degré en dessous est un DJU. Les fournisseurs de fioul utilisent les DJU cumulés sur le mois, répartis en 3 décades (D1/D2/D3), pour valider la consommation réelle et ajuster la facturation.",
+      "steps": {
+        "s1": "13h30 — SCR-01 interroge l'API MétéoFrance pour les 20 stations",
+        "s2": "Les fichiers .data sont déposés dans WATCH_DIR (SRV21 + SRV22)",
+        "s3": "Chokidar détecte le fichier en moins de 5 secondes (polling SMB)",
+        "s4": "ingestService parse, upsert idempotent → MongoDB Atlas",
+        "s5": "Les 4 vues métier sont à jour — bilan email à 13h35"
+      }
     },
     "architecture": {
       "kicker": "Architecture",
       "title": "Double écriture parallèle",
+      "leadIn": "Le script C# écrit en parallèle vers deux destinations totalement indépendantes. La branche ICopitole consomme les fichiers .data à 13h45 pour la gestion énergétique. La branche web portal passe par Chokidar → MongoDB → Next.js pour l'affichage temps réel. Une panne sur l'une ne bloque jamais l'autre.",
       "branch1Label": "Vers ICopitole",
       "branch2Label": "Vers le portail web"
     },
     "timeline": {
-      "kicker": "Démo interactive",
-      "title": "La fenêtre critique de 10 minutes",
+      "kicker": "Contrainte production",
+      "title": "La fenêtre critique : 10 minutes pour corriger avant ICopitole",
+      "context": "ICopitole consomme les fichiers .data à 13h45 précises. Si une station est en erreur, l'opérateur dispose exactement de 10 minutes — entre le mail d'alerte à 13h35 et le point de non-retour à 13h45 — pour corriger et relancer.",
       "scenarioNominal": "Scénario nominal",
       "scenarioError": "Erreur + relance",
       "noReturn": "Point de non-retour",
@@ -85,7 +100,7 @@
           "status": "AUTO",
           "nominal": {
             "action": "Déclenchement du script SCR-01",
-            "detail": "La tâche planifiée Windows lance SCR-01. Le script interroge l'API MétéoFrance pour chacun des 22 sites et collecte les données TN/TX de la veille."
+            "detail": "La tâche planifiée Windows lance SCR-01. Le script interroge l'API MétéoFrance pour chacun des 20 sites et collecte les données TN/TX de la veille."
           },
           "error": {
             "action": "Déclenchement du script SCR-01",
@@ -97,7 +112,7 @@
           "status": "AUTO",
           "nominal": {
             "action": "Mail de compte rendu envoyé ✅",
-            "detail": "SCR-01 termine son exécution. Un mail récapitulatif est envoyé automatiquement : 22/22 stations collectées, fichiers .data écrits sur SRV21 et SRV22, MongoDB à jour."
+            "detail": "SCR-01 termine son exécution. Un mail récapitulatif est envoyé automatiquement : 20/20 stations collectées, fichiers .data écrits sur SRV21 et SRV22, MongoDB à jour."
           },
           "error": {
             "action": "Mail d'erreur envoyé ❌",
@@ -133,23 +148,50 @@
           "status": "AUTO",
           "nominal": {
             "action": "Données disponibles sur le portail web",
-            "detail": "Les données MongoDB (alimentées en parallèle par SCR-01) sont déjà disponibles sur le portail web depuis 13h35. Le pipeline est complet et les degrés jours du jour sont affichés."
+            "detail": "Les données MongoDB sont déjà disponibles sur le portail web depuis 13h35. Le pipeline est complet et les degrés jours du jour sont affichés pour les 20 stations."
           },
           "error": {
             "action": "Correction tardive : relance ICopitole requise",
-            "detail": "Si une correction a été apportée après 13h45, il faut relancer manuellement les tâches ICopitole en aval pour propager les données corrigées. Le portail web, lui, peut être mis à jour indépendamment via MongoDB."
+            "detail": "Si une correction a été apportée après 13h45, il faut relancer manuellement les tâches ICopitole en aval pour propager les données corrigées. Le portail web peut être mis à jour indépendamment via MongoDB."
           }
         }
       }
     },
-    "decision": {
+    "decision1": {
       "kicker": "Décision technique",
-      "title": "usePolling: true — Chokidar sur partage réseau SMB",
-      "content": "Chokidar surveille le dossier de dépôt avec usePolling: true — un choix non-négociable en production. WATCH_DIR pointe vers un partage réseau SMB Windows. Sans polling, les événements fs.watch natifs de Node.js ne se déclenchent pas sur les lecteurs réseau. Avec interval: 5000 et awaitWriteFinish.stabilityThreshold: 2000, le watcher attend que le fichier soit stable (écriture terminée) avant d'ingérer — aucun risque de lire un fichier à moitié écrit. Sur un disque local, usePolling: false serait plus efficace ; la contrainte réseau l'emporte."
+      "title": "usePolling: true — fs.watch ne fonctionne pas sur SMB",
+      "content": "fs.watch natif de Node.js ne déclenche jamais d'événements sur un partage réseau SMB — limite du noyau Windows, peu documentée. usePolling: true avec interval: 5000 est la seule option fiable. awaitWriteFinish.stabilityThreshold: 2000 évite de lire un fichier .data à moitié écrit. ignoreInitial: false re-ingère les fichiers présents au redémarrage du backend — indispensable sur un réseau instable."
+    },
+    "decision2": {
+      "kicker": "Décision technique",
+      "title": "Upsert idempotent — zéro doublon quelle que soit la fréquence de relance",
+      "content": "L'ingestService n'utilise jamais insertOne — toujours updateOne sur le filtre (poste, date) avec l'option upsert: true. L'index unique sur (poste, date) en base garantit qu'une relance manuelle, un redémarrage du watcher ou une réécriture du .data ne crée jamais de doublon. L'opération est idempotente par construction, pas par convention."
+    },
+    "decision3": {
+      "kicker": "Décision technique",
+      "title": "Route POST /api/ingest — le watcher n'est pas un SPOF",
+      "content": "Si Chokidar tombe (coupure SMB, redémarrage Docker), l'opérateur injecte le fichier via POST /api/ingest depuis le portail admin. Même ingestService, même validation, même upsert idempotent. Le watcher n'est pas un point de défaillance unique — le système continue en mode dégradé sans interruption de service."
+    },
+    "beforeAfter": {
+      "kicker": "Résultats",
+      "title": "Ce qui a changé",
+      "before": "Avant MeteoESLC",
+      "after": "Après MeteoESLC",
+      "row1before": "Plusieurs heures de saisie manuelle par mois",
+      "row1after": "Zéro — 100% automatisé depuis la mise en prod",
+      "row2before": "Délai de 1 à 2 jours (email + validation manuelle)",
+      "row2after": "Moins de 10 secondes après le dépôt du fichier .data",
+      "row3before": "Versions multiples en circulation (v1, v2, v2_final…)",
+      "row3after": "Une seule source de vérité — MongoDB Atlas",
+      "row4before": "Erreurs de saisie humaine fréquentes",
+      "row4after": "Zéro erreur — parsing automatique et contrôlé",
+      "row5before": "1 personne = 1 point de défaillance",
+      "row5after": "Accessible à tous, depuis n'importe quel poste"
     },
     "pages": {
       "kicker": "L'application",
       "title": "4 vues métier, une source de vérité",
+      "intro": "Chaque vue répond à un besoin opérationnel précis : le tableau de bord pour le quotidien, le bilan journalier pour l'historique, l'évolution hebdomadaire pour les tendances, et le bilan mensuel DJU pour la facturation fioul.",
       "p1": {
         "title": "Tableau de bord",
         "desc": "Dernier jour importé : KPIs (stations actives, TN/TX moyens, DJU cumulés), alertes gel, graphique barres. Point d'entrée quotidien."
@@ -168,16 +210,17 @@
       }
     },
     "stations": {
-      "kicker": "Couverture",
-      "title": "20 stations Météo France",
+      "kicker": "Couverture géographique",
+      "title": "20 stations MétéoFrance, 20 sites ESLC",
       "description": "Pour chaque site ESLC, la station MétéoFrance active la plus proche disposant de données quotidiennes TN/TX.",
       "columnSite": "Site",
       "columnStation": "Station",
       "columnDistance": "Distance"
     },
     "cta": {
-      "live": "Voir le site live",
-      "allProjects": "Tous les projets"
+      "allProjects": "Tous les projets",
+      "confidentialTitle": "Application confidentielle — accès restreint",
+      "confidentialText": "Pour des raisons de confidentialité et de droits, je ne peux pas partager l'accès à cette application. Elle est déployée en production sur le réseau interne d'ESLC."
     }
   },
   "ProjectFormRH": {
@@ -188,25 +231,26 @@
     },
     "hero": {
       "title": "FormRH — Onboarding & offboarding automatisés",
-      "pitch": "Avant FormRH : 3 échanges d'emails par recrutement, une création AD manuelle, et des droits parfois faux le jour J. Aujourd'hui : les RH remplissent un formulaire, tout le reste s'enchaîne automatiquement.",
+      "pitch": "Avant FormRH : 3 à 5 échanges d'emails par recrutement, une création Active Directory manuelle avec des groupes attribués de mémoire, et aucun suivi des tâches post-création. Aujourd'hui : les RH remplissent un formulaire — le workflow complet s'enchaîne jusqu'au compte AD actif. Et toutes les règles d'attribution (groupes, OU, N2F) sont modifiables depuis une interface admin sans toucher au code.",
       "stat1Value": "4 ans",
       "stat1Label": "En production",
       "stat2Value": "0",
       "stat2Label": "Création AD manuelle",
-      "stat3Value": "8",
-      "stat3Label": "Onglets admin configurables",
-      "stat4Value": "Solo",
-      "stat4Label": "Rôle"
+      "stat3Value": "4",
+      "stat3Label": "Intégrations",
+      "stat4Value": "0",
+      "stat4Label": "Redéploiement requis"
     },
     "context": {
       "kicker": "Le problème",
-      "title": "3 emails, une création à la main, des droits parfois faux",
-      "p1": "Chaque recrutement chez ESLC déclenchait une chaîne manuelle : les RH envoyaient les infos du collaborateur par email au manager, le manager répondait avec les besoins matériels, le SI créait le compte Active Directory à la main — et attribuait les groupes de mémoire. Résultat : des oublis, des droits incorrects, des accès manquants le jour d'arrivée.",
-      "p2": "J'ai conçu FormRH pour remplacer toute cette coordination par un workflow structuré. Les RH saisissent un formulaire, le manager est notifié automatiquement (avec rappels quotidiens s'il ne répond pas), l'admin crée le compte AD en un clic — le worker calcule les bons groupes selon l'emploi et le service, crée le compte LDAP dans la bonne OU, et génère un fichier récap avec les identifiants. Zéro oubli possible."
+      "title": "3 à 5 emails, une création à la main, des droits parfois faux",
+      "p1": "Chaque arrivée de collaborateur chez ESLC déclenchait une chaîne manuelle : les RH envoyaient les informations par email au manager, le manager répondait avec les besoins en matériel et logiciels, l'informatique créait le compte Active Directory à la main — en attribuant les groupes de mémoire. Résultat : 3 à 5 emails par recrutement, des droits parfois incorrects le jour J, et aucun suivi des tâches post-création.",
+      "p2": "FormRH automatise l'intégralité de ce processus, onboarding et offboarding. À l'entrée : un formulaire RH déclenche le workflow complet jusqu'à la création AD. À la sortie : la page dédiée enregistre la date de fin pour que le SI désactive le compte. Et depuis la refonte admin, toutes les règles d'attribution des groupes AD, les chemins OU, les sociétés et les configurations N2F sont modifiables depuis une interface web — sans développeur, sans redéploiement."
     },
     "roles": {
       "kicker": "Le workflow complet",
       "title": "Du recrutement au compte actif — sans email manuel",
+      "intro": "FormRH structure le workflow autour de 4 rôles. Chaque acteur accède uniquement à ce qui le concerne — les RH ne voient pas l'administration AD, les managers ne voient que leurs collaborateurs.",
       "autoLabel": "Automatique",
       "s1": {
         "role": "RH",
@@ -245,7 +289,8 @@
     },
     "architecture": {
       "kicker": "Architecture",
-      "title": "Trois couches, quatre intégrations"
+      "title": "Trois couches, quatre intégrations",
+      "leadIn": "Le frontend Next.js s'appuie sur un backend Express dédié qui orchestre 4 intégrations indépendantes : Active Directory LDAP pour la création des comptes, Microsoft Graph API pour l'authentification et la récupération des managers, l'API N2F pour les notes de frais, et SMTP Exchange pour les emails automatiques."
     },
     "simulator": {
       "kicker": "Démo interactive",
@@ -271,6 +316,22 @@
       "kicker": "Décision technique",
       "title": "Migration zéro-downtime vers MongoDB",
       "content": "La migration des configurations depuis les fichiers JSON statiques vers MongoDB s'est faite en deux semaines de double écriture : chaque modification était écrite dans les deux systèmes en parallèle, et l'application lisait toujours depuis les fichiers. Une fois la parité vérifiée, le cut-over a basculé la source de vérité vers MongoDB en une seule ligne de config — sans interruption de service."
+    },
+    "beforeAfter": {
+      "kicker": "Résultats",
+      "title": "Ce qui a changé",
+      "before": "Avant FormRH",
+      "after": "Après FormRH",
+      "row1before": "3 à 5 emails par recrutement",
+      "row1after": "Zéro email manuel — workflow automatique",
+      "row2before": "Création AD manuelle, groupes attribués de mémoire",
+      "row2after": "1 clic, algorithme déterministe",
+      "row3before": "Droits incorrects fréquents (oubli, mauvais groupe)",
+      "row3after": "Zéro erreur — 4 ans sans incident",
+      "row4before": "Suivi post-création par email, aucune traçabilité",
+      "row4after": "Tableau de bord temps réel",
+      "row5before": "Modifier les règles AD = développeur + redéploiement",
+      "row5after": "8 onglets admin, zéro dev, zéro redéploiement"
     },
     "algo": {
       "kicker": "Algorithme",
@@ -301,7 +362,9 @@
       }
     },
     "cta": {
-      "allProjects": "Tous les projets"
+      "allProjects": "Tous les projets",
+      "confidentialTitle": "Application confidentielle — accès restreint",
+      "confidentialText": "Pour des raisons de confidentialité et de droits, je ne peux pas partager l'accès à cette application. Elle est déployée en production sur le réseau interne d'ESLC et contient des données RH sensibles."
     }
   },
   "Projects": {

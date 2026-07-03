@@ -50,31 +50,46 @@
     },
     "hero": {
       "title": "Degrés Jours — Automated weather pipeline",
-      "pitch": "Before: Excel files shared by email, manual data entry, multiple versions in circulation. After: a .data file dropped on the server is enough — Chokidar detects it, ingests it in under 10 seconds, and DJU are calculated automatically.",
-      "stat1Value": "20",
-      "stat1Label": "Météo France stations",
+      "pitch": "ESLC manages heating across 20 sites with fuel contracts billed on monthly DJU data. I replaced several hours of monthly manual work with a fully automated pipeline: a C# script collects MétéoFrance data every day at 1:30 PM, injects it into MongoDB in under 10 seconds, and DJU are calculated and available in real time across all sites.",
+      "stat1Value": "~3h",
+      "stat1Label": "Saved / month",
       "stat2Value": "< 10s",
-      "stat2Label": "Auto ingestion",
-      "stat3Value": "4",
-      "stat3Label": "Business views",
-      "stat4Value": "Solo",
-      "stat4Label": "Role"
+      "stat2Label": "File → portal",
+      "stat3Value": "0",
+      "stat3Label": "Manual entry error",
+      "stat4Value": "4 yrs",
+      "stat4Label": "In production"
     },
     "context": {
       "kicker": "The problem",
-      "title": "Excel files shared by email, multiple versions, manual entry errors",
-      "p1": "Before MeteoESLC, DJU calculation and temperature tracking were entirely manual: copy-pasting Météo France data into Excel, emailing the file to each stakeholder, managing multiple versions (v1, v2, v2_final…), correcting entry errors after distribution. This recurring process took several hours per month — with a single-person dependency.",
-      "p2": "MeteoESLC replaces all of this with a single source of truth. As soon as a .data file from Météo France is dropped into the watched folder, Chokidar detects it (polling every 5s) and ingests it into MongoDB Atlas in under 10 seconds — no duplicates thanks to the unique index (station, date). All 4 business views are instantly up to date for every user, from any workstation."
+      "title": "Several hours a month, one person, zero automation",
+      "p1": "ESLC tracks heating across 20 sites via fuel contracts billed on monthly Unified Degree Days (DJU). Before MeteoESLC, this calculation was entirely manual: downloading MétéoFrance reports, copying them into Excel, calculating DJU column by column, emailing the file to each stakeholder, managing concurrent versions (v1, v2, v2_final…). This recurring process took several hours every month — and relied on a single person who knew the spreadsheet.",
+      "p2": "The real consequence: a delay or error in monthly DJU could distort the fuel billing for all sites. The company's heating budget depended on a fragile Excel spreadsheet, maintained by hand, with no traceability and no centralization."
+    },
+    "dju": {
+      "kicker": "How it works",
+      "title": "From thermometer to energy contract in under 10 seconds",
+      "explainerTitle": "What is a DJU?",
+      "explainerBody": "A Unified Degree Day (DJU) measures how cold a day is: max(0, 18 − (TN + TX) / 2). When the daily average drops below 18 °C, buildings need heating — each degree below 18 is one DJU. Fuel suppliers use monthly cumulative DJU split into 3 decades (D1/D2/D3) to validate actual consumption and adjust billing.",
+      "steps": {
+        "s1": "1:30 PM — SCR-01 queries MétéoFrance API for all 20 stations",
+        "s2": ".data files dropped in WATCH_DIR (SRV21 + SRV22)",
+        "s3": "Chokidar detects the file in under 5 seconds (SMB polling)",
+        "s4": "ingestService parses, idempotent upsert → MongoDB Atlas",
+        "s5": "All 4 business views updated — summary email at 1:35 PM"
+      }
     },
     "architecture": {
       "kicker": "Architecture",
       "title": "Parallel dual-write",
+      "leadIn": "The C# script writes in parallel to two completely independent destinations. The ICopitole branch consumes .data files at 1:45 PM for energy management. The web portal branch goes through Chokidar → MongoDB → Next.js for real-time display. A failure on one branch never blocks the other.",
       "branch1Label": "To ICopitole",
       "branch2Label": "To web portal"
     },
     "timeline": {
-      "kicker": "Interactive demo",
-      "title": "The critical 10-minute window",
+      "kicker": "Production constraint",
+      "title": "The critical window: 10 minutes to fix before ICopitole",
+      "context": "ICopitole consumes .data files at exactly 1:45 PM. If a station is in error, the operator has exactly 10 minutes — between the alert email at 1:35 PM and the point of no return at 1:45 PM — to fix and re-run.",
       "scenarioNominal": "Nominal scenario",
       "scenarioError": "Error + manual fix",
       "noReturn": "Point of no return",
@@ -85,7 +100,7 @@
           "status": "AUTO",
           "nominal": {
             "action": "SCR-01 script triggered",
-            "detail": "The Windows scheduled task launches SCR-01. The script queries the MétéoFrance API for each of the 22 sites and collects yesterday's TN/TX data."
+            "detail": "The Windows scheduled task launches SCR-01. The script queries the MétéoFrance API for each of the 20 sites and collects yesterday's TN/TX data."
           },
           "error": {
             "action": "SCR-01 script triggered",
@@ -97,7 +112,7 @@
           "status": "AUTO",
           "nominal": {
             "action": "Summary email sent ✅",
-            "detail": "SCR-01 completes its run. A summary email is sent automatically: 22/22 stations collected, .data files written to SRV21 and SRV22, MongoDB up to date."
+            "detail": "SCR-01 completes its run. A summary email is sent automatically: 20/20 stations collected, .data files written to SRV21 and SRV22, MongoDB up to date."
           },
           "error": {
             "action": "Error alert email sent ❌",
@@ -133,7 +148,7 @@
           "status": "AUTO",
           "nominal": {
             "action": "Data available on the web portal",
-            "detail": "MongoDB data (populated in parallel by SCR-01) has been available on the web portal since 1:35 PM. The pipeline is complete and today's degree days are displayed."
+            "detail": "MongoDB data has been available on the web portal since 1:35 PM. The pipeline is complete and today's degree days are displayed for all 20 stations."
           },
           "error": {
             "action": "Late fix: ICopitole re-run required",
@@ -142,14 +157,41 @@
         }
       }
     },
-    "decision": {
+    "decision1": {
       "kicker": "Technical decision",
-      "title": "usePolling: true — Chokidar on SMB network share",
-      "content": "Chokidar watches the drop folder with usePolling: true — a non-negotiable choice in production. WATCH_DIR points to a Windows SMB network share. Without polling, Node.js native fs.watch events are never fired on network drives. With interval: 5000 and awaitWriteFinish.stabilityThreshold: 2000, the watcher waits for the file to be fully stable (write complete) before ingesting — no risk of reading a partially written file. On a local disk, usePolling: false would be more efficient; the network constraint wins."
+      "title": "usePolling: true — fs.watch doesn't work on SMB",
+      "content": "Node.js native fs.watch never fires events on an SMB network share — a Windows kernel limitation, poorly documented. usePolling: true with interval: 5000 is the only reliable option. awaitWriteFinish.stabilityThreshold: 2000 prevents reading a partially written .data file. ignoreInitial: false re-ingests files already present on backend restart — essential on an unstable network."
+    },
+    "decision2": {
+      "kicker": "Technical decision",
+      "title": "Idempotent upsert — zero duplicates regardless of retry frequency",
+      "content": "ingestService never uses insertOne — always updateOne on the (poste, date) filter with upsert: true. The unique index on (poste, date) enforces this at the database level. A manual re-run, watcher restart, or .data file rewrite never creates a duplicate. The operation is idempotent by design, not by convention."
+    },
+    "decision3": {
+      "kicker": "Technical decision",
+      "title": "POST /api/ingest fallback — the watcher is not a SPOF",
+      "content": "If Chokidar goes down (SMB outage, Docker restart), the operator injects the file via POST /api/ingest from the admin portal. Same ingestService, same validation, same idempotent upsert. The watcher is not a single point of failure — the system continues in degraded mode without service interruption."
+    },
+    "beforeAfter": {
+      "kicker": "Results",
+      "title": "What changed",
+      "before": "Before MeteoESLC",
+      "after": "After MeteoESLC",
+      "row1before": "Several hours of manual data entry per month",
+      "row1after": "Zero — 100% automated since deployment",
+      "row2before": "1 to 2 day delay (email + manual validation)",
+      "row2after": "Under 10 seconds after the .data file is deposited",
+      "row3before": "Multiple versions in circulation (v1, v2, v2_final…)",
+      "row3after": "Single source of truth — MongoDB Atlas",
+      "row4before": "Frequent human data entry errors",
+      "row4after": "Zero errors — automatic, controlled parsing",
+      "row5before": "1 person = 1 single point of failure",
+      "row5after": "Available to everyone, from any workstation"
     },
     "pages": {
       "kicker": "The application",
       "title": "4 business views, one source of truth",
+      "intro": "Each view addresses a specific operational need: the dashboard for daily monitoring, the daily report for historical lookup, the weekly trend for temperature patterns, and the monthly DJU report for fuel billing.",
       "p1": {
         "title": "Dashboard",
         "desc": "Last imported day: KPIs (active stations, avg TN/TX, cumulated DJU), frost alerts, bar chart. Daily starting point."
@@ -168,16 +210,17 @@
       }
     },
     "stations": {
-      "kicker": "Coverage",
-      "title": "20 Météo France stations",
+      "kicker": "Geographic coverage",
+      "title": "20 MétéoFrance stations, 20 ESLC sites",
       "description": "For each ESLC site, the nearest active MétéoFrance station with available daily TN/TX data.",
       "columnSite": "Site",
       "columnStation": "Station",
       "columnDistance": "Distance"
     },
     "cta": {
-      "live": "View live site",
-      "allProjects": "All projects"
+      "allProjects": "All projects",
+      "confidentialTitle": "Confidential application — restricted access",
+      "confidentialText": "For confidentiality and legal reasons, I cannot share access to this application. It is deployed in production on ESLC's internal network."
     }
   },
   "ProjectFormRH": {
@@ -188,25 +231,26 @@
     },
     "hero": {
       "title": "FormRH — Automated onboarding & offboarding",
-      "pitch": "Before FormRH: 3 email exchanges per hire, manual AD account creation, and sometimes wrong permissions on day one. Today: HR fills one form, everything else runs automatically.",
+      "pitch": "Before FormRH: 3 to 5 email exchanges per hire, manual Active Directory account creation with groups assigned from memory, and no tracking of post-creation tasks. Today: HR fills one form — the full workflow runs through to an active AD account. And all assignment rules (groups, OU, N2F) are editable from an admin interface without touching the code.",
       "stat1Value": "4 yrs",
       "stat1Label": "In production",
       "stat2Value": "0",
       "stat2Label": "Manual AD creation",
-      "stat3Value": "8",
-      "stat3Label": "Configurable admin tabs",
-      "stat4Value": "Solo",
-      "stat4Label": "Role"
+      "stat3Value": "4",
+      "stat3Label": "Integrations",
+      "stat4Value": "0",
+      "stat4Label": "Redeployment needed"
     },
     "context": {
       "kicker": "The problem",
-      "title": "3 emails, one manual creation, sometimes wrong permissions",
-      "p1": "Every hire at ESLC triggered a manual chain: HR emailed the new employee's info to the manager, the manager replied with equipment needs, and IT manually created the Active Directory account — assigning groups from memory. Result: forgotten permissions, wrong access rights, accounts not ready on day one.",
-      "p2": "I designed FormRH to replace this coordination with a structured workflow. HR fills a form, the manager is automatically notified (with daily reminders if they don't respond), and the admin creates the AD account in one click — the worker calculates the correct groups based on job type and department, creates the LDAP account in the right OU, and generates a credentials file. Nothing can be forgotten."
+      "title": "3 to 5 emails, one manual creation, sometimes wrong permissions",
+      "p1": "Every hire at ESLC triggered a manual chain: HR emailed the new employee's info to the manager, the manager replied with equipment needs, and IT manually created the Active Directory account — assigning groups from memory. Result: 3 to 5 emails per hire, wrong permissions on day one, and no tracking of post-creation tasks.",
+      "p2": "FormRH automates the entire process, onboarding and offboarding. On the way in: an HR form triggers the full workflow through to AD account creation. On the way out: a dedicated page records the end date so IT can deactivate the account. And since the admin overhaul, all AD group assignment rules, OU paths, companies, and N2F configurations are editable from a web interface — no developer, no redeployment."
     },
     "roles": {
       "kicker": "The full workflow",
       "title": "From hire to active account — no manual email",
+      "intro": "FormRH structures the workflow around 4 roles. Each actor sees only what concerns them — HR doesn't see AD administration, managers only see their own employees.",
       "autoLabel": "Automatic",
       "s1": {
         "role": "HR",
@@ -245,7 +289,8 @@
     },
     "architecture": {
       "kicker": "Architecture",
-      "title": "Three layers, four integrations"
+      "title": "Three layers, four integrations",
+      "leadIn": "The Next.js frontend relies on a dedicated Express backend that orchestrates 4 independent integrations: Active Directory LDAP for account creation, Microsoft Graph API for authentication and manager lookup, the N2F API for expense accounts, and SMTP Exchange for automatic emails."
     },
     "simulator": {
       "kicker": "Interactive demo",
@@ -271,6 +316,22 @@
       "kicker": "Technical decision",
       "title": "Zero-downtime migration to MongoDB",
       "content": "The migration of configurations from static JSON files to MongoDB was done over two weeks of dual-write: every change was written to both systems in parallel, while the application still read from files. Once parity was verified, the cut-over switched the source of truth to MongoDB in a single config line — with no service interruption."
+    },
+    "beforeAfter": {
+      "kicker": "Results",
+      "title": "What changed",
+      "before": "Before FormRH",
+      "after": "After FormRH",
+      "row1before": "3 to 5 emails per hire",
+      "row1after": "Zero manual email — automated workflow",
+      "row2before": "Manual AD creation, groups assigned from memory",
+      "row2after": "1 click, deterministic algorithm",
+      "row3before": "Wrong permissions frequent (forgotten groups)",
+      "row3after": "Zero errors — 4 years without incident",
+      "row4before": "Post-creation tracked by email, no traceability",
+      "row4after": "Real-time dashboard",
+      "row5before": "Changing AD rules = developer + redeployment",
+      "row5after": "8 admin tabs, zero dev, zero redeployment"
     },
     "algo": {
       "kicker": "Algorithm",
@@ -301,7 +362,9 @@
       }
     },
     "cta": {
-      "allProjects": "All projects"
+      "allProjects": "All projects",
+      "confidentialTitle": "Confidential application — restricted access",
+      "confidentialText": "For confidentiality and legal reasons, I cannot share access to this application. It is deployed in production on ESLC's internal network and contains sensitive HR data."
     }
   },
   "Projects": {
