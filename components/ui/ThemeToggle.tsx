@@ -1,19 +1,10 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { Sun, Moon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useTheme } from '@/components/ui/ThemeProvider';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
-  if (!mounted) {
-    return <div className="h-8 w-8" />;
-  }
-
   const isDark = theme === 'dark';
 
   return (
